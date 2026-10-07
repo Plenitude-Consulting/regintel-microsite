@@ -1,0 +1,25 @@
+/* Preview card base — every card imports this */
+@import url('../colors_and_type.css');
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  color: var(--fg-2);
+  background: var(--bg-1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  padding: 24px;
+  width: 700px;
+  min-height: 120px;
+}
+.card-body {
+  width: 100%;
+}
+.row { display: flex; gap: 12px; align-items: center; }
+.col { display: flex; flex-direction: column; }
+.meta { font-size: 11px; color: var(--ink-500); font-weight: 500; letter-spacing: 0.02em; }
+.mono { font-family: var(--font-mono); }

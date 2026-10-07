@@ -1,0 +1,256 @@
+/* ==========================================================================
+   Plenitude Design System — Colors & Type
+   Lexend typeface via Google Fonts.
+   ========================================================================== */
+
+/* Local Lexend (brand-provided TTF files in /fonts) */
+@font-face { font-family: 'Lexend'; font-weight: 100; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-Thin.ttf') format('truetype'); }
+@font-face { font-family: 'Lexend'; font-weight: 200; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-ExtraLight.ttf') format('truetype'); }
+@font-face { font-family: 'Lexend'; font-weight: 300; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-Light.ttf') format('truetype'); }
+@font-face { font-family: 'Lexend'; font-weight: 400; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'Lexend'; font-weight: 500; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-Medium.ttf') format('truetype'); }
+@font-face { font-family: 'Lexend'; font-weight: 600; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-SemiBold.ttf') format('truetype'); }
+@font-face { font-family: 'Lexend'; font-weight: 700; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-Bold.ttf') format('truetype'); }
+@font-face { font-family: 'Lexend'; font-weight: 800; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-ExtraBold.ttf') format('truetype'); }
+@font-face { font-family: 'Lexend'; font-weight: 900; font-style: normal; font-display: swap;
+  src: url('fonts/Lexend-Black.ttf') format('truetype'); }
+
+:root {
+  /* --------------------------------------------------------------
+     CORE BRAND COLORS
+     -------------------------------------------------------------- */
+  --core-blue:   #002959;  /* Pantone 295  — primary */
+  --dark-green:  #006975;  /* Pantone 2238 — teal bridge */
+  --mid-blue:    #00B5ED;  /* Pantone 306  — bright accent */
+  --core-green:  #47A340;  /* Pantone 7738 — primary green */
+  --light-green: #78BF26;  /* Pantone 368  — accent only */
+
+  /* --------------------------------------------------------------
+     SECONDARY COLORS — blues
+     -------------------------------------------------------------- */
+  --light-blue:       #99DBF7;  /* Pantone 304 */
+  --second-blue:      #0094D4;  /* Pantone 3538 */
+  --second-dark-blue: #297DA6;  /* Pantone 2454 */
+
+  /* --------------------------------------------------------------
+     SECONDARY COLORS — greens
+     -------------------------------------------------------------- */
+  --second-light-green: #A4C845; /* Pantone 2285 */
+  --second-mid-green:   #618C1F; /* Pantone 370 */
+  --second-dark-green:  #005740; /* Pantone 7484 */
+
+  /* --------------------------------------------------------------
+     NEUTRALS (derived — extend palette with accessible greys)
+     -------------------------------------------------------------- */
+  --white:    #FFFFFF;
+  --ink-900:  #0A1628;   /* near-black, text on light */
+  --ink-700:  #334155;   /* body secondary */
+  --ink-500:  #64748B;   /* muted */
+  --ink-300:  #CBD5E1;   /* borders on light */
+  --ink-200:  #E2E8F0;   /* dividers */
+  --ink-100:  #F1F5F9;   /* surface alt */
+  --ink-50:   #F8FAFC;   /* canvas tint */
+  --surface:  #FFFFFF;
+
+  /* --------------------------------------------------------------
+     SEMANTIC FOREGROUND / BACKGROUND TOKENS
+     -------------------------------------------------------------- */
+  --fg-1: var(--core-blue);    /* primary heading, strong text on light */
+  --fg-2: var(--ink-700);      /* body */
+  --fg-3: var(--ink-500);      /* captions, meta */
+  --fg-on-dark: var(--white);  /* text on core-blue / dark surfaces */
+  --fg-on-dark-2: rgba(255,255,255,0.72);
+
+  --bg-1: var(--white);        /* default canvas */
+  --bg-2: var(--ink-50);       /* alt surface */
+  --bg-3: var(--ink-100);      /* raised panel */
+  --bg-dark: var(--core-blue); /* inverted hero */
+
+  --border-1: var(--ink-200);
+  --border-2: var(--ink-300);
+  --border-strong: var(--core-blue);
+
+  --accent: var(--core-green);
+  --accent-alt: var(--mid-blue);
+
+  /* --------------------------------------------------------------
+     STATUS (mapped from brand palette, neutral-compatible)
+     -------------------------------------------------------------- */
+  --success: var(--core-green);
+  --info:    var(--mid-blue);
+  --warning: #E8A53C;   /* warm tone, harmonizes with palette */
+  --danger:  #C03221;   /* accessible red, not in brand */
+
+  /* --------------------------------------------------------------
+     TYPE
+     -------------------------------------------------------------- */
+  --font-sans: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Lexend', -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* weights */
+  --fw-light:   300;
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-bold:    700;
+  --fw-black:   900;
+
+  /* scale — clean modular scale tuned for Lexend */
+  --fs-display: 64px;  --lh-display: 1.04; --ls-display: -0.02em;
+  --fs-h1:      44px;  --lh-h1:      1.1;  --ls-h1:      -0.015em;
+  --fs-h2:      32px;  --lh-h2:      1.15; --ls-h2:      -0.01em;
+  --fs-h3:      24px;  --lh-h3:      1.25; --ls-h3:      -0.005em;
+  --fs-h4:      20px;  --lh-h4:      1.3;
+  --fs-body:    16px;  --lh-body:    1.55;
+  --fs-body-lg: 18px;  --lh-body-lg: 1.6;
+  --fs-sm:      14px;  --lh-sm:      1.5;
+  --fs-xs:      12px;  --lh-xs:      1.45;
+  --fs-eyebrow: 12px;  --lh-eyebrow: 1.2;  --ls-eyebrow: 0.12em;
+
+  /* --------------------------------------------------------------
+     SPACING (4px base)
+     -------------------------------------------------------------- */
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* --------------------------------------------------------------
+     RADII — Plenitude's graphic device reads as angular, so
+     radii are restrained. Shapes and panels use 0. Interactive
+     elements use 4–8px.
+     -------------------------------------------------------------- */
+  --radius-0: 0;
+  --radius-1: 2px;
+  --radius-2: 4px;
+  --radius-3: 6px;
+  --radius-4: 8px;
+  --radius-pill: 999px;
+
+  /* --------------------------------------------------------------
+     SHADOWS — subtle. Corporate, not glassy.
+     -------------------------------------------------------------- */
+  --shadow-1: 0 1px 2px rgba(0, 41, 89, 0.06), 0 1px 3px rgba(0, 41, 89, 0.04);
+  --shadow-2: 0 2px 4px rgba(0, 41, 89, 0.06), 0 4px 10px rgba(0, 41, 89, 0.06);
+  --shadow-3: 0 8px 24px rgba(0, 41, 89, 0.10), 0 2px 6px rgba(0, 41, 89, 0.05);
+  --shadow-focus: 0 0 0 3px rgba(0, 181, 237, 0.35); /* mid-blue halo */
+
+  /* --------------------------------------------------------------
+     MOTION
+     -------------------------------------------------------------- */
+  --ease-out:   cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:   120ms;
+  --dur-base:   200ms;
+  --dur-slow:   320ms;
+}
+
+/* ==========================================================================
+   BASE / SEMANTIC CLASSES
+   ========================================================================== */
+.plenitude-type,
+.plenitude {
+  font-family: var(--font-sans);
+  color: var(--fg-2);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.p-display {
+  font-family: var(--font-display);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  color: var(--fg-1);
+}
+.p-h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--ls-h1);
+  color: var(--fg-1);
+}
+.p-h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--ls-h2);
+  color: var(--fg-1);
+}
+.p-h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--ls-h3);
+  color: var(--fg-1);
+}
+.p-h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-h4);
+  color: var(--fg-1);
+}
+.p-body {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg-2);
+}
+.p-body-lg {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+  color: var(--fg-2);
+}
+.p-small {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-sm);
+  color: var(--fg-2);
+}
+.p-caption {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-xs);
+  color: var(--fg-3);
+}
+.p-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--core-green);
+}
+.p-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--fg-2);
+}
