@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/plenitude-design-system-776e1792-f7f0-4c31-8080-d19ba39bc1cf/colors_and_type.css">
+<script src="_ds/plenitude-design-system-776e1792-f7f0-4c31-8080-d19ba39bc1cf/_ds_bundle.js"></script>
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;font-family:'Lexend',system-ui,sans-serif;color:#334155;-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+a{color:#002959;text-decoration:none}a:hover{color:#00B5ED;text-decoration:underline}
+button,input,select{font-family:inherit}
+select option{color:#0A1628;background:#fff}
+::selection{background:#99DBF7;color:#002959}
+@keyframes pl-grow{from{width:0%}to{width:100%}}
+</style>
+</helmet>
+
+<header style="position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.97); backdrop-filter: blur(8px); border-bottom: 1px solid #E2E8F0;">
+  <div style="max-width: 1280px; margin: 0 auto; padding: 6px 32px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+    <button onClick="{{ goTop }}" style="display: flex; align-items: center; gap: 14px; background: none; border: none; padding: 0; cursor: pointer;">
+      <img src="assets/plenitude-logo-color.png" alt="Plenitude" style="height: 46px; display: block;">
+      <span style="width: 1px; height: 28px; background: #E2E8F0;"></span>
+      <span style="font-size: 12px; font-weight: 700; color: #002959; line-height: 1.25; text-align: left;">Economic Crime<br>Review 2026</span>
+    </button>
+    <nav style="display: flex; flex: 1; justify-content: flex-end; flex-wrap: wrap; gap: 2px;">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+        <button onClick="{{ n.go }}" style="font-size: 13px; font-weight: 500; color: {{ n.color }}; background: none; border: none; border-bottom: 2px solid {{ n.line }}; padding: 10px 10px 8px; cursor: pointer; transition: color 200ms;">{{ n.label }}</button>
+      </sc-for>
+    </nav>
+    <button onClick="{{ goContact }}" style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #002959; border: none; border-radius: 4px; padding: 10px 16px; cursor: pointer;" style-hover="background: #00224A;">Talk to us</button>
+  </div>
+  <div style="height: 3px; margin-bottom: -1px;"><div ref="{{ progRef }}" style="height: 3px; width: 0%; background: #47A340;"></div></div>
+</header>
+
+<div style="position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; padding: 8px 10px 8px 16px; background: #002959; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,41,89,0.3); width: max-content; max-width: calc(100vw - 24px);">
+  <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #78BF26;">View</span>
+  <div style="display: flex; gap: 2px; background: rgba(255,255,255,0.08); padding: 3px; border-radius: 6px;">
+    <sc-for list="{{ lenses }}" as="l" hint-placeholder-count="4">
+      <button onClick="{{ l.pick }}" style="font-size: 12px; font-weight: 600; padding: 7px 12px; border: none; border-radius: 4px; cursor: pointer; background: {{ l.bg }}; color: {{ l.fg }}; transition: background 200ms, color 200ms;">{{ l.label }}</button>
+    </sc-for>
+  </div>
+  <span style="width: 1px; height: 24px; background: rgba(255,255,255,0.2);"></span>
+  <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #78BF26;">Sector
+    <select value="{{ sector }}" onChange="{{ onSector }}" style="font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; color: #FFFFFF; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.24); border-radius: 4px; padding: 7px 10px; cursor: pointer;">
+      <option value="all">All sectors</option>
+      <option value="banking">Banking</option>
+      <option value="payments">Payments &amp; e-money</option>
+      <option value="insurance">Insurance</option>
+      <option value="wealth">Wealth &amp; asset management</option>
+      <option value="crypto">Crypto-assets</option>
+      <option value="gambling">Gambling</option>
+    </select>
+  </label>
+  <span style="font-size: 12px; color: rgba(255,255,255,0.8); padding: 0 4px;">{{ dockNote }}</span>
+  <sc-if value="{{ filtered }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ resetAll }}" style="font-size: 12px; font-weight: 600; color: #FFFFFF; background: none; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; padding: 6px 10px; cursor: pointer;">Reset</button>
+  </sc-if>
+</div>
+
+<section id="top" data-screen-label="Hero" style="position: relative; background: #002959; color: #FFFFFF; overflow: hidden;">
+  <div style="position: relative; max-width: 1280px; margin: 0 auto; padding: 0 32px; min-height: 620px; display: flex; align-items: center;">
+    <sc-if value="{{ heroPhoto }}" hint-placeholder-val="{{ true }}">
+      <img src="assets/overview-graphic-device.png" alt="" style="position: absolute; right: 0; bottom: 0; width: 56%; height: 96%; object-fit: contain; object-position: right bottom; pointer-events: none;">
+    </sc-if>
+    <sc-if value="{{ heroFlat }}" hint-placeholder-val="{{ false }}">
+      <div style="position: absolute; right: 2%; top: 0; bottom: 0; width: 50%; pointer-events: none;">
+        <div style="position: absolute; left: 6%; bottom: 0; width: 26%; height: 52%; background: #297DA6; clip-path: polygon(0 0, 100% 28%, 100% 100%, 0 100%);"></div>
+        <div style="position: absolute; left: 32%; bottom: 0; width: 26%; height: 76%; background: #00B5ED; clip-path: polygon(0 0, 100% 28%, 100% 100%, 0 100%);"></div>
+        <div style="position: absolute; left: 58%; bottom: 0; width: 34%; height: 98%; background: #78BF26; clip-path: polygon(0 0, 100% 34%, 100% 100%, 0 100%);"></div>
+      </div>
+    </sc-if>
+    <div style="position: relative; max-width: 640px; padding: 96px 0 72px;">
+      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #78BF26;">Year-end briefing · December 2026</div>
+      <h1 style="font-size: 76px; line-height: 1.0; font-weight: 900; letter-spacing: -0.025em; margin: 22px 0 24px; color: #FFFFFF;">2026 in review.<br><span style="color: #99DBF7;">2027 in view.</span></h1>
+      <p style="font-size: 19px; line-height: 1.6; color: rgba(255,255,255,0.82); margin: 0; max-width: 560px; text-wrap: pretty;">The economic crime developments that mattered across the UK, EU and global standard-setters — the typologies taking shape, the enforcement that followed, and what your firm should prepare for next.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px;">
+        <button onClick="{{ goOverview }}" style="font-size: 15px; font-weight: 600; color: #002959; background: #FFFFFF; border: none; border-radius: 4px; padding: 14px 22px; cursor: pointer;" style-hover="background: #EBF8FD;">Explore the dashboard</button>
+        <button style="font-size: 15px; font-weight: 600; color: #FFFFFF; background: transparent; border: 1px solid rgba(255,255,255,0.45); border-radius: 4px; padding: 13px 22px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.08);">Download the briefing (PDF)</button>
+      </div>
+      <p style="font-size: 13px; color: rgba(255,255,255,0.68); margin: 28px 0 0;">Use the <strong style="color: #FFFFFF;">View</strong> bar at the foot of the screen to filter every section by jurisdiction and sector.</p>
+    </div>
+  </div>
+  <div style="position: relative; border-top: 1px solid rgba(255,255,255,0.16); background: #00224A;">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 28px 32px 36px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 22px;">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.72);">The year in numbers · <span style="color: #FFFFFF;">{{ lensName }}</span></div>
+        <sc-if value="{{ illus }}" hint-placeholder-val="{{ true }}"><span style="font-size: 11px; font-weight: 600; color: #002959; background: #99DBF7; padding: 4px 9px; border-radius: 999px;">Illustrative data</span></sc-if>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="border-left: 2px solid #47A340; padding-left: 16px;">
+            <div style="font-size: 44px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; color: #FFFFFF;">{{ k.v }}</div>
+            <div style="font-size: 14px; font-weight: 600; color: #FFFFFF; margin-top: 10px;">{{ k.l }}</div>
+            <div style="font-size: 12px; color: rgba(255,255,255,0.68); margin-top: 4px;">{{ k.n }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="overview" data-screen-label="01 Dashboard" style="background: #FFFFFF; padding: 96px 32px;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="max-width: 760px; margin-bottom: 36px;">
+      <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #47A340;"><span style="font-weight: 900; color: #002959;">01</span><span style="width: 24px; height: 2px; background: #47A340;"></span>Year at a glance</div>
+      <h2 style="font-size: 44px; line-height: 1.1; font-weight: 700; color: #002959; letter-spacing: -0.015em; margin: 14px 0 14px; text-wrap: balance;">Every development that mattered, in one place.</h2>
+      <p style="font-size: 18px; line-height: 1.6; color: #334155; margin: 0; text-wrap: pretty;">Filter by theme, raise the significance threshold, or search. Everything responds to the jurisdiction and sector you set in the View bar.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 18px; padding: 20px; border: 1px solid #E2E8F0; border-radius: 8px; background: #F8FAFC; margin-bottom: 24px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <sc-for list="{{ themeChips }}" as="t" hint-placeholder-count="7">
+          <button onClick="{{ t.pick }}" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; padding: 8px 12px; border-radius: 4px; border: 1px solid {{ t.bd }}; background: {{ t.bg }}; color: {{ t.fg }}; cursor: pointer; transition: background 200ms, color 200ms;">
+            <span style="width: 8px; height: 8px; border-radius: 2px; background: {{ t.dot }}; display: {{ t.dotDisp }};"></span>{{ t.label }}<span style="font-size: 11px; font-weight: 700; opacity: 0.7;">{{ t.n }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+        <input type="search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search developments, regulators, topics" style="flex: 1 1 260px; font-size: 14px; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 4px; background: #FFFFFF; color: #0A1628; outline: none;" style-focus="border-color: #00B5ED; box-shadow: 0 0 0 3px rgba(0,181,237,0.35);">
+        <label style="display: flex; align-items: center; gap: 12px; font-size: 13px; color: #334155;">
+          <span style="font-weight: 600; color: #002959;">Significance</span>
+          <input type="range" min="1" max="3" step="1" value="{{ sig }}" onChange="{{ onSig }}" style="width: 120px; accent-color: #47A340;">
+          <span style="min-width: 160px;">{{ sigLabel }}</span>
+        </label>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <div style="flex: 1 1 300px; display: flex; height: 10px; border-radius: 2px; overflow: hidden; gap: 2px; background: #E2E8F0;">
+          <sc-for list="{{ mix }}" as="m" hint-placeholder-count="6"><div title="{{ m.label }}" style="flex: {{ m.n }}; background: {{ m.color }}; opacity: {{ m.op }}; transition: flex 320ms, opacity 200ms;"></div></sc-for>
+        </div>
+        <div style="font-size: 13px; color: #334155;"><strong style="color: #002959;">{{ shown }}</strong> of 18 highlights · from 214 developments tracked</div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+      <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+        <article style="display: flex; flex-direction: column; gap: 12px; padding: 22px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; transition: box-shadow 200ms, transform 200ms;" style-hover="box-shadow: 0 2px 4px rgba(0,41,89,0.06), 0 4px 10px rgba(0,41,89,0.06); transform: translateY(-2px);">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+            <span style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #002959;"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{ c.tcolor }};"></span>{{ c.theme }}</span>
+            <span style="font-size: 12px; color: #64748B;">{{ c.date }}</span>
+          </div>
+          <h3 style="font-size: 18px; line-height: 1.3; font-weight: 700; color: #002959; margin: 0; text-wrap: pretty;">{{ c.title }}</h3>
+          <p style="font-size: 14px; line-height: 1.55; color: #334155; margin: 0; flex: 1;">{{ c.sum }}</p>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 11px; font-weight: 700; color: #FFFFFF; background: {{ c.jbg }}; padding: 3px 7px; border-radius: 3px; letter-spacing: 0.06em;">{{ c.jur }}</span>
+            <span style="font-size: 12px; font-weight: 500; color: #334155;">{{ c.lvl }}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid #E2E8F0;">
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <sc-for list="{{ c.tags }}" as="g" hint-placeholder-count="2"><span style="font-size: 11px; font-weight: 500; color: #334155; background: #F1F5F9; padding: 4px 8px; border-radius: 999px;">{{ g.t }}</span></sc-for>
+            </div>
+            <div title="{{ c.sigLabel }}" style="display: flex; align-items: flex-end; gap: 2px; flex: none;">
+              <sc-for list="{{ c.bars }}" as="b" hint-placeholder-count="3"><span style="width: 4px; height: {{ b.h }}; background: {{ b.bg }}; border-radius: 1px;"></span></sc-for>
+            </div>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+    <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 48px; text-align: center; border: 1px dashed #CBD5E1; border-radius: 8px; color: #334155; font-size: 15px; display: flex; flex-direction: column; align-items: center; gap: 14px;">No highlights match these filters.<button onClick="{{ resetAll }}" style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #002959; border: none; border-radius: 4px; padding: 10px 16px; cursor: pointer;">Reset filters</button></div>
+    </sc-if>
+  </div>
+</section>
+
+<section id="timeline" data-screen-label="02 Timeline" style="background: #F8FAFC; padding: 96px 32px; border-top: 1px solid #E2E8F0;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 32px;">
+      <div style="max-width: 720px;">
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #47A340;"><span style="font-weight: 900; color: #002959;">02</span><span style="width: 24px; height: 2px; background: #47A340;"></span>Timeline</div>
+        <h2 style="font-size: 44px; line-height: 1.1; font-weight: 700; color: #002959; letter-spacing: -0.015em; margin: 14px 0 14px; text-wrap: balance;">Twenty-four months on one line.</h2>
+        <p style="font-size: 18px; line-height: 1.6; color: #334155; margin: 0; text-wrap: pretty;">Scroll from 2026 into 2027. We separate binding outcomes from early international milestones, so you can see which dates actually change obligations.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: #334155;">
+        <span style="display: flex; align-items: center; gap: 10px;"><span style="width: 22px; height: 14px; background: #002959; border-radius: 2px;"></span>Binding outcome</span>
+        <span style="display: flex; align-items: center; gap: 10px;"><span style="width: 22px; height: 14px; border: 1.5px solid #002959; border-radius: 2px; background: #FFFFFF;"></span>Early or international milestone</span>
+        <span style="display: flex; align-items: center; gap: 10px;"><span style="width: 22px; height: 14px; border: 1.5px dashed #002959; border-radius: 2px; background: #FFFFFF;"></span>Consultation</span>
+      </div>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; display: flex;">
+      <div style="flex: none; width: 160px; border-right: 1px solid #E2E8F0; background: #FFFFFF;">
+        <div style="height: 48px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; padding: 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #64748B;">Jurisdiction</div>
+        <sc-for list="{{ tlLanes }}" as="ln" hint-placeholder-count="3">
+          <div style="height: 164px; border-bottom: 1px solid #E2E8F0; padding: 18px 16px; display: flex; flex-direction: column; gap: 6px; border-left: 4px solid {{ ln.color }}; opacity: {{ ln.op }}; transition: opacity 200ms;">
+            <span style="font-size: 17px; font-weight: 700; color: #002959;">{{ ln.label }}</span>
+            <span style="font-size: 12px; color: #64748B; line-height: 1.4;">{{ ln.sub }}</span>
+          </div>
+        </sc-for>
+        <div style="height: 40px;"></div>
+      </div>
+      <div ref="{{ trackRef }}" style="flex: 1; overflow-x: auto; min-width: 0;">
+        <div style="position: relative; width: 2304px; background-image: repeating-linear-gradient(90deg, #F1F5F9 0 1px, transparent 1px 96px);">
+          <div style="position: absolute; top: 0; bottom: 0; left: 1152px; width: 1152px; background: repeating-linear-gradient(135deg, rgba(0,41,89,0.035) 0 6px, transparent 6px 14px); pointer-events: none;"></div>
+          <div style="position: absolute; top: 0; bottom: 0; left: 1151px; width: 2px; background: #00B5ED; z-index: 1; pointer-events: none;"></div>
+          <div style="display: flex; height: 48px; border-bottom: 1px solid #E2E8F0; background: #FFFFFF;">
+            <sc-for list="{{ months }}" as="mo" hint-placeholder-count="24">
+              <div style="flex: none; width: 96px; padding: 8px 10px 0; border-left: 1px solid {{ mo.bd }}; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: #47A340; height: 12px;">{{ mo.yr }}</span>
+                <span style="font-size: 13px; font-weight: 500; color: #002959;">{{ mo.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ tlLanes }}" as="ln" hint-placeholder-count="3">
+            <div style="position: relative; height: 164px; border-bottom: 1px solid #E2E8F0; opacity: {{ ln.op }}; transition: opacity 200ms;">
+              <sc-for list="{{ ln.events }}" as="e" hint-placeholder-count="6">
+                <button onClick="{{ e.pick }}" style="position: absolute; left: {{ e.left }}; top: {{ e.top }}; width: 180px; text-align: left; padding: 10px 12px; background: {{ e.bg }}; color: {{ e.fg }}; border: {{ e.bd }}; border-radius: 4px; box-shadow: {{ e.sh }}; cursor: pointer; z-index: {{ e.z }}; transition: box-shadow 200ms, transform 200ms; transform: {{ e.tf }};" style-hover="transform: translateY(-2px);">
+                  <span style="display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{ e.dc }};">{{ e.date }}</span>
+                  <span style="display: block; font-size: 13px; font-weight: 600; line-height: 1.3; margin-top: 4px;">{{ e.t }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-for>
+          <div style="position: relative; height: 40px; font-size: 12px; font-weight: 700; color: #0094D4;">
+            <span style="position: absolute; right: 1168px; top: 12px; white-space: nowrap;">2026 in review</span>
+            <span style="position: absolute; left: 1166px; top: 12px; white-space: nowrap;">2027 in view</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; padding: 28px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px;">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <span style="font-size: 11px; font-weight: 700; color: #FFFFFF; background: {{ tlSel.jbg }}; padding: 3px 7px; border-radius: 3px; letter-spacing: 0.06em;">{{ tlSel.jur }}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #002959; background: #F1F5F9; padding: 4px 9px; border-radius: 999px;">{{ tlSel.kind }}</span>
+          <span style="font-size: 11px; font-weight: 600; color: #006975; background: #EBF8FD; padding: 4px 9px; border-radius: 999px;">{{ tlSel.period }}</span>
+        </div>
+        <h3 style="font-size: 26px; line-height: 1.2; font-weight: 700; color: #002959; margin: 4px 0 0; text-wrap: balance;">{{ tlSel.t }}</h3>
+        <div style="font-size: 14px; color: #64748B;">{{ tlSel.date }}</div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+          <button onClick="{{ tlPrev }}" style="font-size: 13px; font-weight: 600; color: #002959; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; padding: 8px 14px; cursor: pointer;" style-hover="background: #F1F5F9;">← Previous</button>
+          <button onClick="{{ tlNext }}" style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #002959; border: 1px solid #002959; border-radius: 4px; padding: 8px 14px; cursor: pointer;" style-hover="background: #00224A;">Next →</button>
+          <span style="font-size: 12px; color: #64748B; margin-left: 6px;">{{ tlPos }}</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <p style="font-size: 16px; line-height: 1.6; color: #334155; margin: 0;">{{ tlSel.d }}</p>
+        <div style="padding: 16px 18px; background: #EBF8FD; border-radius: 4px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #006975;">What it means for your firm</div>
+          <p style="font-size: 15px; line-height: 1.55; color: #0A1628; margin: 6px 0 0;">{{ tlSel.s }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="typologies" data-screen-label="03 Typologies" style="background: #002959; color: #FFFFFF; padding: 96px 32px;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="max-width: 760px; margin-bottom: 32px;">
+      <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #78BF26;"><span style="font-weight: 900; color: #FFFFFF;">03</span><span style="width: 24px; height: 2px; background: #78BF26;"></span>Developing typologies</div>
+      <h2 style="font-size: 44px; line-height: 1.1; font-weight: 700; color: #FFFFFF; letter-spacing: -0.015em; margin: 14px 0 14px; text-wrap: balance;">How the money moves.</h2>
+      <p style="font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.82); margin: 0; text-wrap: pretty;">Four typologies grounded in FATF's 2026 reporting, animated stage by stage. Select a stage to see the red flags your monitoring should be catching.</p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <sc-for list="{{ typoTabs }}" as="tt" hint-placeholder-count="4">
+        <button onClick="{{ tt.pick }}" style="font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: 4px; border: 1px solid {{ tt.bd }}; background: {{ tt.bg }}; color: {{ tt.fg }}; cursor: pointer; transition: background 200ms, color 200ms;">{{ tt.label }}</button>
+      </sc-for>
+    </div>
+    <p style="font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.78); margin: 20px 0 0; max-width: 760px;">{{ typoDesc }}</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 28px; margin-top: 28px; align-items: flex-start;">
+      <div style="flex: 1 1 320px; max-width: 420px; display: flex; flex-direction: column; gap: 10px;">
+        <sc-for list="{{ stages }}" as="st" hint-placeholder-count="3">
+          <button onClick="{{ st.pick }}" style="text-align: left; padding: 18px; background: {{ st.bg }}; border: 1px solid {{ st.bd }}; border-radius: 6px; color: #FFFFFF; cursor: pointer; display: flex; gap: 14px; transition: background 200ms, border-color 200ms;">
+            <span style="flex: none; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: {{ st.numBg }}; color: {{ st.numFg }}; border: 1px solid {{ st.bd }};">{{ st.n }}</span>
+            <span style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+              <span style="font-size: 16px; font-weight: 700; line-height: 1.3; padding-top: 3px;">{{ st.title }}</span>
+              <sc-if value="{{ st.on }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size: 14px; line-height: 1.55; color: rgba(255,255,255,0.82);">{{ st.text }}</span>
+                <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #78BF26; margin-top: 4px;">Red flags</span>
+                <sc-for list="{{ st.flags }}" as="f" hint-placeholder-count="2">
+                  <span style="display: flex; gap: 10px; font-size: 13px; line-height: 1.45; color: #FFFFFF;"><span style="flex: none; width: 6px; height: 6px; background: #78BF26; margin-top: 6px; transform: rotate(45deg);"></span>{{ f.f }}</span>
+                </sc-for>
+              </sc-if>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="flex: 3 1 540px; min-width: 0; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; overflow: hidden;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.12); gap: 12px; flex-wrap: wrap;">
+          <span style="font-size: 13px; color: rgba(255,255,255,0.8);">Stage <strong style="color: #FFFFFF;">{{ stageNum }}</strong> of 3 · {{ stageTitle }}</span>
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 11px; color: rgba(255,255,255,0.68); margin-right: 2px;">Most relevant to</span>
+            <sc-for list="{{ typoSectors }}" as="ts" hint-placeholder-count="2"><span style="font-size: 11px; font-weight: 600; color: {{ ts.fg }}; background: {{ ts.bg }}; padding: 4px 8px; border-radius: 999px;">{{ ts.t }}</span></sc-for>
+            <button onClick="{{ togglePlay }}" style="font-size: 12px; font-weight: 600; color: #FFFFFF; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.24); border-radius: 4px; padding: 6px 12px; cursor: pointer; margin-left: 6px;">{{ playLabel }}</button>
+          </div>
+        </div>
+        <div style="height: 2px; background: rgba(255,255,255,0.08);">{{ stageBar }}</div>
+        <div style="padding: 16px 12px 8px;">{{ flowEl }}</div>
+        <div style="padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.12); font-size: 12px; color: rgba(255,255,255,0.68);">Source: {{ typoSource }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="enforcement" data-screen-label="04 Enforcement" style="background: #FFFFFF; padding: 96px 32px;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 36px;">
+      <div style="max-width: 720px;">
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #47A340;"><span style="font-weight: 900; color: #002959;">04</span><span style="width: 24px; height: 2px; background: #47A340;"></span>Enforcement</div>
+        <h2 style="font-size: 44px; line-height: 1.1; font-weight: 700; color: #002959; letter-spacing: -0.015em; margin: 14px 0 14px; text-wrap: balance;">Enforcement is national. So is this map.</h2>
+        <p style="font-size: 18px; line-height: 1.6; color: #334155; margin: 0; text-wrap: pretty;">There is no single EU enforcement regime. Each tile is a national supervisory jurisdiction — select one to see representative actions. Dashed tiles are gaps we are still filling.</p>
+      </div>
+      <div style="display: flex; gap: 2px; background: #F1F5F9; padding: 3px; border-radius: 6px;">
+        <sc-for list="{{ metrics }}" as="mt" hint-placeholder-count="2">
+          <button onClick="{{ mt.pick }}" style="font-size: 13px; font-weight: 600; padding: 8px 14px; border: none; border-radius: 4px; cursor: pointer; background: {{ mt.bg }}; color: {{ mt.fg }}; box-shadow: {{ mt.sh }};">{{ mt.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start;">
+      <div style="flex: 1 1 440px; max-width: 580px;">
+        <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px;">
+          <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="28">
+            <button onClick="{{ t.pick }}" title="{{ t.name }}" style="grid-row: {{ t.row }}; grid-column: {{ t.col }}; aspect-ratio: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 8px; background: {{ t.bg }}; color: {{ t.fg }}; border: {{ t.bd }}; outline: {{ t.ol }}; outline-offset: 2px; border-radius: 4px; cursor: pointer; opacity: {{ t.op }}; text-align: left; transition: background 320ms, opacity 200ms;" style-hover="transform: translateY(-2px);">
+              <span style="font-size: 14px; font-weight: 700;">{{ t.code }}</span>
+              <span style="font-size: 11px; font-weight: 500;">{{ t.val }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 20px; font-size: 12px; color: #64748B;">
+          <span style="display: flex; align-items: center; gap: 6px;">Fewer
+            <sc-for list="{{ scale }}" as="sw" hint-placeholder-count="5"><span style="width: 18px; height: 12px; border-radius: 2px; background: {{ sw.c }};"></span></sc-for>
+          More</span>
+          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 18px; height: 12px; border-radius: 2px; border: 1.5px dashed #94A3B8;"></span>Gap — not yet sourced</span>
+        </div>
+      </div>
+      <div style="flex: 1 1 380px; border: 1px solid #E2E8F0; border-radius: 8px; padding: 28px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #47A340;">Selected jurisdiction</div>
+            <h3 style="font-size: 28px; font-weight: 700; color: #002959; margin: 6px 0 4px;">{{ cty.name }}</h3>
+            <div style="font-size: 13px; color: #64748B;">{{ cty.regs }}</div>
+          </div>
+          <span style="font-size: 11px; font-weight: 600; color: {{ cty.covFg }}; background: {{ cty.covBg }}; padding: 4px 9px; border-radius: 999px;">{{ cty.cov }}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #E2E8F0; border: 1px solid #E2E8F0; border-radius: 4px; overflow: hidden;">
+          <div style="background: #FFFFFF; padding: 16px;"><div style="font-size: 32px; font-weight: 900; color: #002959; line-height: 1;">{{ cty.n }}</div><div style="font-size: 12px; color: #64748B; margin-top: 6px;">AML enforcement actions, 2026</div></div>
+          <div style="background: #FFFFFF; padding: 16px;"><div style="font-size: 32px; font-weight: 900; color: #002959; line-height: 1;">{{ cty.v }}</div><div style="font-size: 12px; color: #64748B; margin-top: 6px;">Total penalties</div></div>
+        </div>
+        <sc-if value="{{ cty.hasCases }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #64748B;">Representative actions</div>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ cty.cases }}" as="cs" hint-placeholder-count="3">
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-top: 1px solid #E2E8F0; opacity: {{ cs.op }}; transition: opacity 200ms;">
+                <div style="min-width: 0;">
+                  <div style="font-size: 14px; font-weight: 600; color: #002959;">{{ cs.firm }}</div>
+                  <div style="font-size: 13px; color: #334155; margin-top: 2px;">{{ cs.issue }}</div>
+                  <div style="font-size: 11px; color: #64748B; margin-top: 4px;">{{ cs.sector }} · {{ cs.date }}</div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; color: #002959; white-space: nowrap;">{{ cs.amt }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cty.noCases }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 16px 18px; border: 1px dashed #CBD5E1; border-radius: 4px; font-size: 14px; line-height: 1.55; color: #334155;">{{ cty.note }}</div>
+        </sc-if>
+      </div>
+    </div>
+
+    <div style="margin-top: 80px; padding-top: 64px; border-top: 1px solid #E2E8F0;">
+      <div style="max-width: 720px;">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #47A340;">Text analysis · FCA final notices</div>
+        <h3 style="font-size: 32px; line-height: 1.15; font-weight: 700; color: #002959; letter-spacing: -0.01em; margin: 12px 0 12px;">What the FCA keeps saying.</h3>
+        <p style="font-size: 16px; line-height: 1.6; color: #334155; margin: 0;">Recurring phrases across 14 FCA final notices issued in 2026, sized by how many notices they appear in. Select a phrase to see how often it recurs and what it is cited alongside.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 32px; margin-top: 32px; align-items: stretch;">
+        <div style="flex: 3 1 480px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; align-content: center; gap: 6px 16px; padding: 36px; background: #F8FAFC; border-radius: 8px; min-height: 340px;">
+          <sc-for list="{{ words }}" as="w" hint-placeholder-count="20">
+            <button onClick="{{ w.pick }}" style="font-size: {{ w.size }}; font-weight: {{ w.w }}; color: {{ w.fg }}; background: {{ w.bg }}; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; line-height: 1.3; letter-spacing: -0.01em; transition: background 200ms, color 200ms;">{{ w.t }}</button>
+          </sc-for>
+        </div>
+        <div style="flex: 2 1 320px; padding: 28px; border: 1px solid #E2E8F0; border-radius: 8px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #64748B;">Selected phrase</div>
+          <div style="font-size: 26px; line-height: 1.2; font-weight: 700; color: #002959;">“{{ wordSel.t }}”</div>
+          <div style="display: grid; grid-template-columns: repeat(7, 24px); gap: 4px;">
+            <sc-for list="{{ wordSel.waffle }}" as="wf" hint-placeholder-count="14"><span style="width: 24px; height: 24px; border-radius: 3px; background: {{ wf.bg }};"></span></sc-for>
+          </div>
+          <div style="font-size: 14px; color: #334155;">Appears in <strong style="color: #002959;">{{ wordSel.n }} of 14</strong> final notices · <strong style="color: {{ wordSel.dcol }};">{{ wordSel.delta }}</strong> on 2025</div>
+          <div style="padding: 16px 18px; background: #EBF8FD; border-radius: 4px; font-size: 14px; line-height: 1.6; color: #0A1628;">{{ wordSel.x }}<div style="font-size: 11px; color: #297DA6; margin-top: 8px;">Composite excerpt for illustration</div></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+            <span style="font-size: 12px; color: #64748B; margin-right: 4px;">Often cited with</span>
+            <sc-for list="{{ wordSel.rel }}" as="rw" hint-placeholder-count="3"><button onClick="{{ rw.pick }}" style="font-size: 12px; font-weight: 500; color: #002959; background: #F1F5F9; border: none; padding: 5px 10px; border-radius: 999px; cursor: pointer;" style-hover="background: #E2E8F0;">{{ rw.t }}</button></sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="timing" data-screen-label="05 Timing analysis" style="background: #EBF8FD; padding: 96px 32px;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="max-width: 760px; margin-bottom: 36px;">
+      <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #006975;"><span style="font-weight: 900; color: #002959;">05</span><span style="width: 24px; height: 2px; background: #47A340;"></span>Timing analysis</div>
+      <h2 style="font-size: 44px; line-height: 1.1; font-weight: 700; color: #002959; letter-spacing: -0.015em; margin: 14px 0 14px; text-wrap: balance;">When will enforcement reach insurance?</h2>
+      <p style="font-size: 18px; line-height: 1.6; color: #334155; margin: 0; text-wrap: pretty;">We measured how long UK and EU supervisors have taken to move from guidance or thematic work to a first enforcement action in other sectors. The pattern points to a window for insurers.</p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
+      <div style="flex: 2 1 580px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 24px;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; margin-bottom: 16px; font-size: 12px; color: #334155;">
+          <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+            <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid #002959; background: #FFFFFF;"></span>Guidance or thematic review</span>
+            <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid #47A340; background: #47A340;"></span>First enforcement action</span>
+            <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 18px; height: 12px; border-radius: 2px; border: 1px dashed #47A340; background: rgba(71,163,64,0.16);"></span>Projected window</span>
+          </div>
+          <span style="font-weight: 700; color: #002959;">Median lag: 28 months</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <sc-for list="{{ lagRows }}" as="r" hint-placeholder-count="6">
+            <button onClick="{{ r.pick }}" style="display: flex; align-items: center; padding: 0; background: {{ r.bg }}; border: none; border-radius: 4px; cursor: pointer; text-align: left; height: 52px; transition: background 200ms;" style-hover="background: #F1F5F9;">
+              <span style="flex: none; width: 168px; padding: 0 12px; font-size: 14px; font-weight: {{ r.fw }}; color: #002959;">{{ r.label }}</span>
+              <span style="position: relative; flex: 1; height: 100%; margin-right: 12px;">
+                <span style="position: absolute; top: 0; bottom: 0; left: {{ todayX }}; width: 1px; background: #00B5ED;"></span>
+                <span style="position: absolute; top: 14px; height: 24px; left: {{ r.bl }}; width: {{ r.bw }}; background: rgba(71,163,64,0.16); border: 1px dashed #47A340; border-radius: 3px; display: {{ r.bdisp }};"></span>
+                <span style="position: absolute; top: 25px; left: {{ r.gl }}; width: {{ r.lw }}; border-top: 2px {{ r.ls }} #002959;"></span>
+                <span style="position: absolute; top: 4px; left: {{ r.ml }}; transform: translateX(-50%); font-size: 11px; font-weight: 700; color: #002959; white-space: nowrap;">{{ r.lag }}</span>
+                <span style="position: absolute; top: 20px; left: {{ r.gl }}; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: #FFFFFF; border: 2px solid #002959;"></span>
+                <span style="position: absolute; top: 20px; left: {{ r.al }}; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: {{ r.abg }}; border: 2px solid #47A340;"></span>
+              </span>
+            </button>
+          </sc-for>
+          <div style="display: flex; height: 30px;">
+            <span style="flex: none; width: 168px;"></span>
+            <span style="position: relative; flex: 1; margin-right: 12px; border-top: 1px solid #CBD5E1;">
+              <sc-for list="{{ ticks }}" as="tk" hint-placeholder-count="8"><span style="position: absolute; left: {{ tk.x }}; top: 8px; transform: translateX(-50%); font-size: 11px; color: #64748B;">{{ tk.y }}</span></sc-for>
+            </span>
+          </div>
+        </div>
+        <div style="font-size: 12px; color: #297DA6; margin-top: 8px;">Blue line marks publication of this review (December 2026).</div>
+      </div>
+      <div style="flex: 1 1 320px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #47A340;">{{ lagSel.eyebrow }}</div>
+        <h3 style="font-size: 24px; line-height: 1.2; font-weight: 700; color: #002959; margin: 0;">{{ lagSel.label }}</h3>
+        <div style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 48px; font-weight: 900; color: #002959; line-height: 1;">{{ lagSel.months }}</span><span style="font-size: 14px; color: #334155;">{{ lagSel.unit }}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #334155;">
+          <div style="display: flex; gap: 10px;"><span style="flex: none; width: 12px; height: 12px; margin-top: 4px; border-radius: 50%; border: 2px solid #002959;"></span><span><strong style="color: #002959;">{{ lagSel.gd }}</strong> — {{ lagSel.gl }}</span></div>
+          <div style="display: flex; gap: 10px;"><span style="flex: none; width: 12px; height: 12px; margin-top: 4px; border-radius: 50%; border: 2px solid #47A340; background: {{ lagSel.abg }};"></span><span><strong style="color: #002959;">{{ lagSel.ad }}</strong> — {{ lagSel.al }}</span></div>
+        </div>
+        <sc-if value="{{ lagSel.forecast }}" hint-placeholder-val="{{ true }}">
+          <div style="border-top: 1px solid #E2E8F0; padding-top: 16px;">
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #64748B; margin-bottom: 12px;">Signals that usually come first</div>
+            <sc-for list="{{ ladder }}" as="ld" hint-placeholder-count="4">
+              <div style="display: flex; gap: 12px; align-items: flex-start; padding: 8px 0;">
+                <span style="flex: none; width: 18px; height: 18px; border-radius: 3px; background: {{ ld.bg }}; border: 2px solid {{ ld.bd }}; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">{{ ld.mark }}</span>
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 600; color: #002959;">{{ ld.t }}</span><span style="font-size: 12px; color: #64748B;">{{ ld.when }}</span></span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ lagSel.hist }}" hint-placeholder-val="{{ false }}">
+          <p style="font-size: 14px; line-height: 1.6; color: #334155; margin: 0; border-top: 1px solid #E2E8F0; padding-top: 16px;">{{ lagSel.note }}</p>
+        </sc-if>
+        <p style="font-size: 12px; line-height: 1.5; color: #64748B; margin: auto 0 0;">Method: earliest public guidance, thematic review or Dear CEO letter matched to the first published final notice or penalty in that sector. Illustrative for design review.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="journey" data-screen-label="06 Guidance to practice" style="background: #002959; color: #FFFFFF; padding: 96px 32px;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="max-width: 760px; margin-bottom: 32px;">
+      <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #78BF26;"><span style="font-weight: 900; color: #FFFFFF;">06</span><span style="width: 24px; height: 2px; background: #78BF26;"></span>Guidance to practice</div>
+      <h2 style="font-size: 44px; line-height: 1.1; font-weight: 700; color: #FFFFFF; letter-spacing: -0.015em; margin: 14px 0 14px; text-wrap: balance;">From guidance to a working control.</h2>
+      <p style="font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.82); margin: 0; text-wrap: pretty;">Pick a piece of guidance and walk it through to the evidence a supervisor will ask for. Tick off the actions you already have in hand.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+      <sc-for list="{{ guides }}" as="gd" hint-placeholder-count="3">
+        <button onClick="{{ gd.pick }}" style="text-align: left; padding: 20px; border-radius: 6px; border: 1px solid {{ gd.bd }}; background: {{ gd.bg }}; cursor: pointer; display: flex; flex-direction: column; gap: 10px; transition: background 200ms;">
+          <span style="font-size: 11px; font-weight: 700; color: #FFFFFF; background: {{ gd.jbg }}; padding: 3px 7px; border-radius: 3px; letter-spacing: 0.06em; align-self: flex-start;">{{ gd.jur }}</span>
+          <span style="font-size: 16px; font-weight: 700; line-height: 1.3; color: {{ gd.fg }};">{{ gd.title }}</span>
+          <span style="font-size: 13px; line-height: 1.45; color: {{ gd.sub }};">{{ gd.short }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="position: relative; margin: 44px 0 28px;">
+      <div style="position: absolute; left: 12.5%; right: 12.5%; top: 14px; height: 2px; background: rgba(255,255,255,0.2);"><div style="height: 2px; width: {{ stepPct }}; background: #47A340; transition: width 320ms;"></div></div>
+      <div style="position: relative; display: grid; grid-template-columns: repeat(4, 1fr);">
+        <sc-for list="{{ steps }}" as="sp" hint-placeholder-count="4">
+          <button onClick="{{ sp.pick }}" style="display: flex; flex-direction: column; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 0;">
+            <span style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: {{ sp.cbg }}; color: {{ sp.cfg }}; border: 2px solid {{ sp.cbd }}; transition: background 200ms, border-color 200ms;">{{ sp.num }}</span>
+            <span style="font-size: 13px; font-weight: 600; color: {{ sp.lfg }};">{{ sp.title }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
+      <div style="flex: 3 1 520px; background: #FFFFFF; color: #334155; border-radius: 8px; padding: 36px; display: flex; flex-direction: column; gap: 16px; min-height: 380px;">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #47A340;">{{ stepCur.eyebrow }}</div>
+        <h3 style="font-size: 28px; line-height: 1.2; font-weight: 700; color: #002959; margin: 0;">{{ stepCur.title }}</h3>
+        <p style="font-size: 17px; line-height: 1.6; margin: 0; max-width: 640px; text-wrap: pretty;">{{ stepCur.body }}</p>
+        <sc-if value="{{ stepCur.isList }}" hint-placeholder-val="{{ false }}">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+            <sc-for list="{{ stepCur.list }}" as="li" hint-placeholder-count="4"><div style="padding: 14px 16px; border: 1px solid #E2E8F0; border-radius: 4px; font-size: 14px; line-height: 1.45; color: #002959; font-weight: 500;">{{ li.t }}</div></sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ stepCur.isCheck }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ stepCur.checks }}" as="ck" hint-placeholder-count="5">
+              <button onClick="{{ ck.toggle }}" style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid {{ ck.bd }}; background: {{ ck.bg }}; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; color: #0A1628; transition: background 200ms;">
+                <span style="flex: none; width: 20px; height: 20px; border-radius: 3px; border: 2px solid {{ ck.boxBd }}; background: {{ ck.boxBg }}; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">{{ ck.mark }}</span>{{ ck.t }}
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="margin-top: auto; display: flex; justify-content: space-between; gap: 12px; padding-top: 18px; border-top: 1px solid #E2E8F0;">
+          <button onClick="{{ stepBack }}" style="font-size: 14px; font-weight: 600; color: #002959; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; padding: 10px 18px; cursor: pointer; opacity: {{ backOp }};">← Back</button>
+          <button onClick="{{ stepNext }}" style="font-size: 14px; font-weight: 600; color: #FFFFFF; background: #002959; border: none; border-radius: 4px; padding: 11px 18px; cursor: pointer;" style-hover="background: #00224A;">{{ nextLabel }}</button>
+        </div>
+      </div>
+      <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="padding: 24px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #78BF26;">Your readiness</div>
+          <div style="display: flex; align-items: baseline; gap: 6px;"><span style="font-size: 48px; font-weight: 900; line-height: 1;">{{ ready.n }}</span><span style="font-size: 16px; color: rgba(255,255,255,0.7);">of 5 actions</span></div>
+          <div style="height: 6px; background: rgba(255,255,255,0.14); border-radius: 3px; overflow: hidden;"><div style="height: 6px; width: {{ ready.pct }}; background: #78BF26; transition: width 320ms;"></div></div>
+          <div style="font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.8);">{{ ready.msg }}</div>
+        </div>
+        <div style="padding: 24px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #78BF26;">Key date</div>
+          <div style="font-size: 18px; font-weight: 700; line-height: 1.3;">{{ guideDate }}</div>
+          <div style="font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.8);">{{ guideHelp }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="outlook" data-screen-label="07 2027 outlook" style="background: #FFFFFF; padding: 96px 32px;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="max-width: 760px; margin-bottom: 36px;">
+      <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #47A340;"><span style="font-weight: 900; color: #002959;">07</span><span style="width: 24px; height: 2px; background: #47A340;"></span>2027 outlook</div>
+      <h2 style="font-size: 44px; line-height: 1.1; font-weight: 700; color: #002959; letter-spacing: -0.015em; margin: 14px 0 14px; text-wrap: balance;">2027: what will actually land.</h2>
+      <p style="font-size: 18px; line-height: 1.6; color: #334155; margin: 0; text-wrap: pretty;">Not every 2027 milestone deserves equal attention. We have plotted each one by how concrete the outcome is and how much it will change your firm's day-to-day.</p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start;">
+      <div style="flex: 3 1 560px; min-width: 0; display: flex; gap: 12px;">
+        <div style="flex: none; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #002959; text-align: center;">Impact on your firm →</div>
+        <div style="flex: 1; min-width: 0;">
+          <div style="position: relative; height: 500px; border-left: 2px solid #002959; border-bottom: 2px solid #002959; overflow: hidden;">
+            <div style="position: absolute; left: 0; top: 0; width: 50%; height: 50%; background: #F8FAFC; padding: 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #64748B;">Watch closely</div>
+            <div style="position: absolute; right: 0; top: 0; width: 50%; height: 50%; background: #EBF8FD; padding: 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #006975; text-align: right;">Act now</div>
+            <div style="position: absolute; left: 0; bottom: 0; width: 50%; height: 50%; background: #FFFFFF; padding: 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #64748B; display: flex; align-items: flex-end;">Monitor</div>
+            <div style="position: absolute; right: 0; bottom: 0; width: 50%; height: 50%; background: #F8FAFC; padding: 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #64748B; display: flex; align-items: flex-end; justify-content: flex-end;">Plan and comply</div>
+            <sc-for list="{{ outs }}" as="o" hint-placeholder-count="12">
+              <div style="display: contents;">
+                <button onClick="{{ o.pick }}" title="{{ o.sl }}" style="position: absolute; left: {{ o.x }}; bottom: {{ o.y }}; width: {{ o.size }}; height: {{ o.size }}; transform: translate(-50%, 50%); border-radius: 50%; background: {{ o.bg }}; border: 2px solid #FFFFFF; box-shadow: {{ o.ring }}; opacity: {{ o.op }}; cursor: pointer; padding: 0; z-index: 2; transition: width 200ms, height 200ms, opacity 200ms;"></button>
+                <button onClick="{{ o.pick }}" style="position: absolute; left: {{ o.ll }}; right: {{ o.lr }}; bottom: {{ o.lb }}; font-size: 12px; font-weight: {{ o.lw }}; color: {{ o.lc }}; background: none; border: none; padding: 0; white-space: nowrap; cursor: pointer; opacity: {{ o.op }}; line-height: 16px; z-index: 2;">{{ o.sl }}</button>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #002959;"><span>Early international milestone</span><span>Binding national outcome →</span></div>
+        </div>
+      </div>
+      <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="padding: 28px; border: 1px solid #E2E8F0; border-radius: 8px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 11px; font-weight: 700; color: #FFFFFF; background: {{ outSel.jbg }}; padding: 3px 7px; border-radius: 3px; letter-spacing: 0.06em;">{{ outSel.jur }}</span>
+            <span style="font-size: 11px; font-weight: 600; color: {{ outSel.qfg }}; background: {{ outSel.qbg }}; padding: 4px 9px; border-radius: 999px;">{{ outSel.quad }}</span>
+            <span style="font-size: 12px; color: #64748B;">{{ outSel.when }}</span>
+          </div>
+          <h3 style="font-size: 22px; line-height: 1.25; font-weight: 700; color: #002959; margin: 4px 0 0;">{{ outSel.t }}</h3>
+          <p style="font-size: 15px; line-height: 1.6; color: #334155; margin: 0;">{{ outSel.d }}</p>
+          <div style="padding: 14px 16px; background: #EBF8FD; border-radius: 4px;">
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #006975;">What we would do now</div>
+            <p style="font-size: 14px; line-height: 1.55; color: #0A1628; margin: 6px 0 0;">{{ outSel.act }}</p>
+          </div>
+        </div>
+        <div style="padding: 24px 28px; border: 1px solid #E2E8F0; border-radius: 8px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #47A340; margin-bottom: 8px;">Your 2027 shortlist · act now</div>
+          <sc-for list="{{ shortlist }}" as="sh" hint-placeholder-count="3">
+            <button onClick="{{ sh.pick }}" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; padding: 10px 0; background: none; border: none; border-top: 1px solid #E2E8F0; cursor: pointer; text-align: left;">
+              <span style="font-size: 14px; font-weight: 600; color: #002959;">{{ sh.t }}</span>
+              <span style="font-size: 12px; color: #64748B; white-space: nowrap;">{{ sh.when }}</span>
+            </button>
+          </sc-for>
+          <sc-if value="{{ shortEmpty }}" hint-placeholder-val="{{ false }}"><div style="font-size: 13px; color: #64748B; padding-top: 6px;">Nothing in the act-now quadrant for this view.</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact" data-screen-label="Contact" style="background: #002959; color: #FFFFFF; padding: 96px 32px 120px;">
+  <div style="max-width: 1280px; margin: 0 auto;">
+    <div style="display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start;">
+      <div style="flex: 2 1 480px;">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #78BF26;">Prepare for 2027</div>
+        <h2 style="font-size: 44px; line-height: 1.1; font-weight: 700; color: #FFFFFF; letter-spacing: -0.015em; margin: 14px 0 16px; max-width: 640px; text-wrap: balance;">Turn this year's lessons into next year's plan.</h2>
+        <p style="font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.82); margin: 0; max-width: 580px;">We help financial institutions translate regulatory change into controls that work — and evidence that stands up to supervisory scrutiny.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px;">
+          <button style="font-size: 15px; font-weight: 600; color: #002959; background: #FFFFFF; border: none; border-radius: 4px; padding: 14px 22px; cursor: pointer;" style-hover="background: #EBF8FD;">Book a 2027 readiness session</button>
+          <button style="font-size: 15px; font-weight: 600; color: #FFFFFF; background: transparent; border: 1px solid rgba(255,255,255,0.45); border-radius: 4px; padding: 13px 22px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.08);">Download the full briefing</button>
+        </div>
+      </div>
+      <div style="flex: 1 1 320px; padding: 28px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-size: 20px; font-weight: 700;">Get the quarterly update</div>
+        <p style="font-size: 14px; line-height: 1.55; color: rgba(255,255,255,0.8); margin: 0;">A short briefing on economic crime regulation, every quarter. No marketing in between.</p>
+        <sc-if value="{{ notSubscribed }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="email" value="{{ email }}" onChange="{{ onEmail }}" placeholder="name@firm.com" style="flex: 1 1 180px; font-size: 14px; padding: 11px 14px; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; background: rgba(255,255,255,0.06); color: #FFFFFF; outline: none;" style-focus="border-color: #00B5ED; box-shadow: 0 0 0 3px rgba(0,181,237,0.35);">
+            <button onClick="{{ subscribe }}" style="font-size: 14px; font-weight: 600; color: #002959; background: #FFFFFF; border: none; border-radius: 4px; padding: 11px 16px; cursor: pointer;">Subscribe</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ subscribed }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size: 14px; color: #FFFFFF; padding: 12px 14px; border-left: 3px solid #78BF26; background: rgba(255,255,255,0.06);">Thank you — the next update arrives in March 2027.</div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-top: 72px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.16); font-size: 12px; color: rgba(255,255,255,0.68);">
+      <img src="assets/plenitude-logo-white.png" alt="Plenitude" style="height: 44px; display: block;">
+      <span>© 2026 Plenitude Consulting Ltd · All data on this page is illustrative and for design review only.</span>
+      <div style="display: flex; gap: 20px;"><span>Methodology</span><span>Privacy</span><span>Accessibility</span></div>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Photo device&quot;,&quot;Flat shards&quot;],&quot;default&quot;:&quot;Photo device&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Display&quot;},&quot;showIllustrative&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Display&quot;},&quot;autoplay&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
+class Component extends DCLogic {
+  state = { lens: 'all', sector: 'all', theme: 'all', sig: 1, query: '', tl: 'e5', typo: 0, stage: 0, playing: true, country: 'NL', metric: 'count', word: 'transaction monitoring', lag: 'insurance', guide: 0, step: 0, checks: {}, out: 'o1', active: '', email: '', subscribed: false };
+  progRef = React.createRef();
+  trackRef = React.createRef();
+
+  NAV = [['overview', 'Dashboard'], ['timeline', 'Timeline'], ['typologies', 'Typologies'], ['enforcement', 'Enforcement'], ['timing', 'Timing'], ['journey', 'Guidance'], ['outlook', '2027 outlook']];
+  LENSES = [{ id: 'all', label: 'All', long: 'All jurisdictions' }, { id: 'global', label: 'Global', long: 'Global standard-setters' }, { id: 'eu', label: 'EU', long: 'European Union' }, { id: 'uk', label: 'UK', long: 'United Kingdom' }];
+  JUR = { global: { label: 'GLOBAL', name: 'Global', bg: '#006975', sub: 'FATF · Wolfsberg' }, eu: { label: 'EU', name: 'EU', bg: '#297DA6', sub: 'EU-level and national' }, uk: { label: 'UK', name: 'UK', bg: '#002959', sub: 'FCA · OFSI · PSR · HMT' } };
+  SECTORS = { banking: 'Banking', payments: 'Payments & e-money', insurance: 'Insurance', wealth: 'Wealth & asset mgmt', crypto: 'Crypto-assets', gambling: 'Gambling' };
+  THEMES = { amla: { label: 'AMLA & EU package', color: '#002959' }, sanctions: { label: 'Sanctions', color: '#0094D4' }, enforcement: { label: 'Enforcement', color: '#99DBF7' }, fatf: { label: 'FATF & standards', color: '#006975' }, fraud: { label: 'Fraud', color: '#47A340' }, crypto: { label: 'Crypto-assets', color: '#A4C845' } };
+  MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  MONTHS_L = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  KPIS = {
+    all: [['214', 'developments tracked', 'UK, EU and global'], ['154', 'AML enforcement actions', 'UK and 22 EU member states'], ['€976m', 'in AML penalties', 'UK figures converted from sterling'], ['11', 'FATF reports and typologies', 'Plus three plenaries']],
+    global: [['38', 'international developments', 'FATF, Wolfsberg, Egmont'], ['3', 'FATF plenaries', 'February · June · October'], ['7', 'grey-list changes', 'Across three plenaries'], ['11', 'typology and guidance reports', 'Sanctions, fraud, virtual assets']],
+    eu: [['102', 'developments', 'EU-level and national'], ['122', 'national enforcement actions', 'Across 22 member states'], ['€411m', 'in national AML penalties', 'No single EU regime'], ['19', 'AMLA RTS and guidelines', 'Consulted on or finalised']],
+    uk: [['74', 'developments', 'FCA, OFSI, PSR, HM Treasury'], ['32', 'enforcement actions', 'FCA, OFSI, Gambling Commission, HMRC'], ['£486m', 'in AML penalties', 'Up 18% on 2025'], ['14', 'FCA final notices', 'Analysed for recurring themes']]
+  };
+
+  ITEMS = [
+    { theme: 'amla', jur: 'eu', lvl: 'EU-level', m: '2026-07', title: 'AMLA publishes final RTS on customer due diligence', sum: 'Harmonised identification, verification and beneficial-ownership data points ahead of the AMLR applying in July 2027.', sectors: ['all'], sig: 3 },
+    { theme: 'amla', jur: 'eu', lvl: 'EU-level', m: '2026-03', title: 'AMLA consults on selecting directly supervised entities', sum: 'Methodology for choosing the cross-border groups AMLA will supervise directly from 2028.', sectors: ['banking', 'payments', 'crypto'], sig: 3 },
+    { theme: 'sanctions', jur: 'eu', lvl: 'EU-level', m: '2026-06', title: 'New EU sanctions package targets third-country enablers', sum: 'Listings extend to intermediaries in enabling jurisdictions supplying dual-use goods.', sectors: ['banking', 'insurance'], sig: 3 },
+    { theme: 'sanctions', jur: 'uk', lvl: 'OFSI', m: '2026-02', title: 'OFSI threat assessment on enabling jurisdictions', sum: 'Highlights professional enablers and trade routes used to evade UK financial sanctions.', sectors: ['banking', 'wealth', 'insurance'], sig: 2 },
+    { theme: 'fatf', jur: 'global', lvl: 'FATF', m: '2026-02', title: 'FATF February plenary updates the grey list', sum: 'Two jurisdictions added and one removed from increased monitoring.', sectors: ['all'], sig: 2 },
+    { theme: 'fatf', jur: 'global', lvl: 'FATF', m: '2026-06', title: 'FATF typology report on sanctions evasion', sum: 'Case studies on front companies, transhipment and nested correspondent relationships.', sectors: ['banking', 'insurance'], sig: 3 },
+    { theme: 'fatf', jur: 'global', lvl: 'FATF', m: '2026-10', title: 'FATF guidance on payment transparency (R.16)', sum: 'Implementation guidance on originator and beneficiary data for cross-border payments.', sectors: ['payments', 'banking'], sig: 2 },
+    { theme: 'fatf', jur: 'global', lvl: 'Wolfsberg Group', m: '2026-05', title: 'Wolfsberg statement on effective monitoring', sum: 'Industry principles for moving from alert volumes to outcome-focused monitoring.', sectors: ['banking'], sig: 1 },
+    { theme: 'enforcement', jur: 'uk', lvl: 'FCA', m: '2026-04', title: 'Retail bank fined for transaction monitoring failures', sum: 'Alert backlog and poorly calibrated scenarios left high-risk activity unreviewed.', sectors: ['banking'], sig: 3 },
+    { theme: 'enforcement', jur: 'uk', lvl: 'FCA', m: '2026-09', title: 'Wealth manager fined over PEP due diligence', sum: 'Source-of-wealth checks not completed for politically exposed clients.', sectors: ['wealth'], sig: 2 },
+    { theme: 'enforcement', jur: 'eu', lvl: 'National · Netherlands', m: '2026-05', title: 'DNB fines payment institution for merchant CDD', sum: 'Insufficient onboarding checks on high-risk merchants.', sectors: ['payments'], sig: 2 },
+    { theme: 'enforcement', jur: 'eu', lvl: 'National · Ireland', m: '2026-08', title: 'Life insurer sanctioned for legacy CDD gaps', sum: 'Policyholders onboarded before 2015 were never re-verified.', sectors: ['insurance'], sig: 2 },
+    { theme: 'fraud', jur: 'uk', lvl: 'PSR', m: '2026-01', title: 'APP fraud reimbursement: year-one data', sum: 'Reimbursement rates and sending-firm liability published by firm size.', sectors: ['payments', 'banking'], sig: 2 },
+    { theme: 'fraud', jur: 'uk', lvl: 'Home Office · SFO', m: '2026-09', title: 'Failure to prevent fraud: the first year in force', sum: 'Early signals on what “reasonable procedures” look like in practice.', sectors: ['all'], sig: 3 },
+    { theme: 'crypto', jur: 'eu', lvl: 'EU-level', m: '2026-07', title: 'MiCA transitional period ends', sum: 'Crypto-asset service providers must now hold MiCA authorisation to operate.', sectors: ['crypto'], sig: 3 },
+    { theme: 'crypto', jur: 'uk', lvl: 'FCA', m: '2026-12', title: 'FCA final rules for the UK cryptoasset regime', sum: 'Authorisation, conduct and financial crime requirements for trading platforms.', sectors: ['crypto'], sig: 2 },
+    { theme: 'enforcement', jur: 'uk', lvl: 'Gambling Commission', m: '2026-03', title: 'Gambling operator fined for AML failings', sum: 'Source-of-funds checks triggered too late for high-spending customers.', sectors: ['gambling'], sig: 1 },
+    { theme: 'enforcement', jur: 'eu', lvl: 'National · Germany', m: '2026-11', title: 'BaFin fines digital bank for delayed SARs', sum: 'Suspicious activity reports filed months after detection.', sectors: ['banking'], sig: 2 }
+  ];
+
+  EVENTS = [
+    { id: 'g1', lane: 'global', m: 1, r: 0, k: 'milestone', t: 'FATF February plenary', d: 'Grey-list changes and adoption of the revised standard on payment transparency.', s: 'Refresh country-risk ratings and correspondent reviews within a week.' },
+    { id: 'g2', lane: 'global', m: 5, r: 0, k: 'outcome', t: 'FATF sanctions evasion typology report', d: 'Case studies on front companies, transhipment hubs and nested correspondent relationships.', s: 'Use the case studies as a scenario library for sanctions-evasion monitoring.' },
+    { id: 'g3', lane: 'global', m: 9, r: 0, k: 'milestone', t: 'FATF October plenary', d: 'Strategic priorities for the incoming presidency, including fraud and asset recovery.', s: 'Low immediate impact, but it sets the 2027 international agenda.' },
+    { id: 'g4', lane: 'global', m: 13, r: 0, k: 'milestone', t: 'FATF February plenary', d: 'First plenary of 2027, with a further grey-list review.', s: 'Plan a one-week country-risk refresh around the plenary date.' },
+    { id: 'g5', lane: 'global', m: 17, r: 0, k: 'consult', t: 'FATF consults on fraud guidance', d: 'Draft guidance on cyber-enabled fraud and money mule networks.', s: 'Respond through industry bodies if fraud is a material risk for you.' },
+    { id: 'g6', lane: 'global', m: 20, r: 0, k: 'milestone', t: 'Wolfsberg monitoring guidance', d: 'Updated principles on outcome-based transaction monitoring.', s: 'A useful benchmark for your next monitoring methodology review.' },
+    { id: 'g7', lane: 'global', m: 21, r: 1, k: 'outcome', t: '5th-round evaluations of EU states', d: 'FATF publishes mutual evaluations that test effectiveness rather than technical compliance.', s: 'Expect national supervisors to raise intensity ahead of onsite visits.' },
+    { id: 'e1', lane: 'eu', m: 2, r: 0, k: 'consult', t: 'AMLA consults on supervision selection', d: 'Methodology for selecting the entities AMLA will supervise directly.', s: 'Model your likelihood of selection now, using the published criteria.' },
+    { id: 'e2', lane: 'eu', m: 6, r: 0, k: 'outcome', t: 'AMLA final RTS on CDD', d: 'Harmonised customer due diligence data points across the EU.', s: 'Start a CDD data gap analysis against the RTS.' },
+    { id: 'e3', lane: 'eu', m: 6, r: 1, k: 'outcome', t: 'MiCA transitional period ends', d: 'Crypto-asset service providers must hold MiCA authorisation to operate.', s: 'Review your exposure to unauthorised CASPs.' },
+    { id: 'e4', lane: 'eu', m: 10, r: 0, k: 'milestone', t: 'AMLP forum sets supervisory priorities', d: 'National supervisors agree convergence priorities for 2027.', s: 'This feeds directly into our European outlook for 2027.' },
+    { id: 'e5', lane: 'eu', m: 18, r: 0, k: 'outcome', t: 'AMLR applies; 6AMLD deadline', d: 'The single EU AML rulebook applies directly in every member state, and 6AMLD must be transposed.', s: 'The defining date of 2027 for EU-regulated firms and UK groups with EU subsidiaries.' },
+    { id: 'e6', lane: 'eu', m: 21, r: 0, k: 'outcome', t: 'AMLA selects supervised entities', d: 'Up to 40 cross-border groups notified ahead of direct supervision in 2028.', s: 'Prepare for a supervisory data request and a new lead supervisor.' },
+    { id: 'e7', lane: 'eu', m: 23, r: 1, k: 'milestone', t: 'Countdown to AMLA direct supervision', d: 'Direct supervision begins in January 2028.', s: 'Final readiness checks on governance and data.' },
+    { id: 'u1', lane: 'uk', m: 0, r: 0, k: 'outcome', t: 'APP reimbursement: year-one data', d: 'The PSR publishes reimbursement rates by firm.', s: 'Benchmark your reimbursement and recovery rates against peers.' },
+    { id: 'u2', lane: 'uk', m: 3, r: 0, k: 'outcome', t: 'FCA fines retail bank over monitoring', d: 'A final notice citing alert backlog and calibration failures.', s: 'Test your own alert ageing and tuning governance.' },
+    { id: 'u3', lane: 'uk', m: 8, r: 0, k: 'milestone', t: 'Failure to prevent fraud: year one', d: 'First anniversary of the offence coming into force.', s: 'Re-test your reasonable procedures against early guidance.' },
+    { id: 'u4', lane: 'uk', m: 11, r: 0, k: 'outcome', t: 'FCA final cryptoasset rules', d: 'Rules for the new UK cryptoasset regime are finalised.', s: 'Plan authorisation or counterparty reviews.' },
+    { id: 'u5', lane: 'uk', m: 14, r: 0, k: 'outcome', t: 'MLR amendments in force', d: 'Targeted changes to CDD triggers and trust registration.', s: 'Update procedures and refresh training.' },
+    { id: 'u6', lane: 'uk', m: 16, r: 1, k: 'milestone', t: 'FCA begins professional-body transition', d: 'The FCA starts taking on AML supervision of professional services.', s: 'Relevant if you serve legal or accountancy clients.' },
+    { id: 'u7', lane: 'uk', m: 22, r: 0, k: 'consult', t: 'Economic Crime Plan 3 consultation', d: 'Cross-government priorities to 2030.', s: 'Watch for signals on fraud and public–private data sharing.' }
+  ];
+  KIND = { outcome: 'Binding outcome', milestone: 'Early or international milestone', consult: 'Consultation' };
+
+  TYPO = [
+    { name: 'Sanctions evasion', sectors: ['banking', 'insurance', 'wealth'], source: 'FATF report on sanctions evasion and proliferation financing, 2026 (illustrative citation)',
+      desc: 'Designated persons use companies in enabling jurisdictions to keep procuring EU and UK goods — and to move money through the correspondent banking system.',
+      nodes: [{ id: 'a', l: 'Designated person', s: 'Sanctioned owner', x: 100, y: 80 }, { id: 'b', l: 'Shell company', s: 'Enabling jurisdiction', x: 310, y: 80 }, { id: 'c', l: 'Trade intermediary', s: 'Dual-use re-exports', x: 520, y: 80 }, { id: 'd', l: 'EU/UK supplier', s: 'Unwitting exporter', x: 730, y: 200 }, { id: 'e', l: 'Third-country bank', s: 'Nested correspondent', x: 310, y: 320 }, { id: 'f', l: 'EU/UK correspondent', s: 'Clearing bank', x: 520, y: 320 }],
+      edges: [['a', 'b', 'controls'], ['b', 'c', 'contracts'], ['c', 'd', 'orders'], ['b', 'e', 'funds'], ['e', 'f', 'pays via'], ['f', 'd', 'settles']],
+      stages: [
+        { t: 'Concealed ownership', x: 'A designated person controls a newly incorporated company in a jurisdiction with weak beneficial-ownership transparency.', n: ['a', 'b'], f: ['Recently incorporated counterparty with nominee directors', 'Ownership chains through jurisdictions with no public register'] },
+        { t: 'Procurement through intermediaries', x: 'The shell company contracts a trade intermediary, which buys controlled goods from EU or UK suppliers for re-export.', n: ['b', 'c', 'd'], f: ['Goods inconsistent with the buyer’s stated business', 'Shipping routes via known transhipment hubs'] },
+        { t: 'Payment layering', x: 'Payments run through a third-country bank and its nested correspondent access, so the clearing bank never sees the ultimate owner.', n: ['b', 'e', 'f', 'd'], f: ['Payments routed via nested correspondent relationships', 'Third-party payments for goods'] }
+      ] },
+    { name: 'Fraud and mule networks', sectors: ['banking', 'payments'], source: 'FATF report on illicit financial flows from cyber-enabled fraud (illustrative citation)',
+      desc: 'Proceeds of authorised push payment fraud are dispersed through layers of mule accounts within minutes, then cashed out or converted to crypto-assets.',
+      nodes: [{ id: 'a', l: 'Victim', s: 'Authorised push payment', x: 100, y: 200 }, { id: 'b', l: 'Mule account', s: 'Recruited student', x: 310, y: 80 }, { id: 'c', l: 'Mule account', s: 'Account takeover', x: 310, y: 320 }, { id: 'd', l: 'Second-tier mule', s: 'Business account', x: 520, y: 200 }, { id: 'e', l: 'Crypto exchange', s: 'On-ramp account', x: 730, y: 80 }, { id: 'f', l: 'Cash-out', s: 'ATMs, money services', x: 730, y: 320 }],
+      edges: [['a', 'b', 'pays'], ['a', 'c', 'pays'], ['b', 'd', 'forwards'], ['c', 'd', 'forwards'], ['d', 'e', 'buys crypto'], ['d', 'f', 'withdraws']],
+      stages: [
+        { t: 'Social engineering and payment', x: 'A victim is persuaded to pay what they believe is a legitimate payee — in reality, a recruited or compromised mule account.', n: ['a', 'b', 'c'], f: ['Payment to a new payee after an unusual call or message', 'First payment of its kind, made under time pressure'] },
+        { t: 'Rapid dispersal', x: 'Funds are forwarded within minutes to a second-tier account, often a business account with plausible turnover.', n: ['b', 'c', 'd'], f: ['Funds in and out within minutes', 'Many inbound credits from unrelated senders'] },
+        { t: 'Integration and cash-out', x: 'The network converts funds to crypto-assets or withdraws cash across many locations.', n: ['d', 'e', 'f'], f: ['Crypto purchases shortly after inbound credits', 'Structured ATM withdrawals across locations'] }
+      ] },
+    { name: 'Crypto-asset layering', sectors: ['crypto', 'payments'], source: 'FATF targeted update on virtual assets, 2026 (illustrative citation)',
+      desc: 'Ransomware proceeds are obscured through mixers and cross-chain bridges before reaching weakly supervised platforms and fiat off-ramps.',
+      nodes: [{ id: 'a', l: 'Ransomware proceeds', s: 'Victim pays in BTC', x: 100, y: 200 }, { id: 'b', l: 'Mixer', s: 'Obfuscation service', x: 310, y: 80 }, { id: 'c', l: 'Cross-chain bridge', s: 'BTC to stablecoin', x: 310, y: 320 }, { id: 'd', l: 'Unhosted wallets', s: 'Peel chain', x: 520, y: 200 }, { id: 'e', l: 'Non-compliant VASP', s: 'Weak travel rule', x: 730, y: 80 }, { id: 'f', l: 'Fiat off-ramp', s: 'EU/UK bank account', x: 730, y: 320 }],
+      edges: [['a', 'b', 'deposits'], ['a', 'c', 'bridges'], ['b', 'd', 'splits'], ['c', 'd', 'splits'], ['d', 'e', 'deposits'], ['e', 'f', 'sells']],
+      stages: [
+        { t: 'Obfuscation', x: 'Proceeds pass through mixers and cross-chain bridges to break the on-chain trail.', n: ['a', 'b', 'c'], f: ['Exposure to mixers or privacy protocols', 'Rapid chain-hopping across bridges'] },
+        { t: 'Fragmentation', x: 'Funds are split across many fresh, unhosted wallets in a peel chain.', n: ['b', 'c', 'd'], f: ['Peel-chain patterns across many new wallets', 'Round-number stablecoin transfers'] },
+        { t: 'Off-ramp', x: 'Funds reach a platform with weak travel-rule controls and are sold into fiat, landing in an EU or UK bank account.', n: ['d', 'e', 'f'], f: ['Counterparty VASP in a jurisdiction without travel-rule enforcement', 'Crypto inflows inconsistent with stated income'] }
+      ] },
+    { name: 'Life insurance misuse', sectors: ['insurance', 'wealth'], source: 'FATF risk-based approach guidance for the life insurance sector (illustrative citation)',
+      desc: 'Illicit funds enter through single-premium life products and leave as refunds after early cancellation — often paid to a third party.',
+      nodes: [{ id: 'a', l: 'Illicit funds', s: 'Proceeds of corruption', x: 100, y: 200 }, { id: 'b', l: 'Intermediary', s: 'Broker or adviser', x: 310, y: 80 }, { id: 'c', l: 'Single-premium bond', s: 'Life or investment', x: 520, y: 80 }, { id: 'd', l: 'Early surrender', s: 'Within cooling-off', x: 730, y: 200 }, { id: 'e', l: 'Third-party refund', s: 'Unrelated account', x: 520, y: 320 }, { id: 'f', l: 'Policy loan', s: 'Policy as collateral', x: 310, y: 320 }],
+      edges: [['a', 'b', 'introduced'], ['b', 'c', 'premium'], ['c', 'd', 'cancels'], ['d', 'e', 'refunds'], ['c', 'f', 'collateral']],
+      stages: [
+        { t: 'Placement via an intermediary', x: 'A broker introduces a client who pays a large single premium, often from an overseas or third-party account.', n: ['a', 'b', 'c'], f: ['Large premium paid from a third-party or overseas account', 'Customer indifferent to performance or charges'] },
+        { t: 'Early exit', x: 'The policy is cancelled within the cooling-off period, despite penalties.', n: ['c', 'd'], f: ['Cancellation in the cooling-off period despite penalties', 'Repeated top-ups followed by partial surrenders'] },
+        { t: 'Extraction', x: 'The refund is paid to an unrelated account, or the policy is used as collateral for a loan.', n: ['c', 'd', 'e', 'f'], f: ['Refund requested to an account not used for the premium', 'Policy used as loan collateral soon after purchase'] }
+      ] }
+  ];
+
+  COUNTRIES = [
+    ['SE', 'Sweden', 1, 5, 4, 38.0, 'complete', 'Finansinspektionen'], ['FI', 'Finland', 1, 6, 2, 3.1, 'partial', 'FIN-FSA'],
+    ['IE', 'Ireland', 2, 1, 6, 22.4, 'complete', 'Central Bank of Ireland'], ['UK', 'United Kingdom', 2, 2, 32, 565, 'complete', 'FCA · OFSI · Gambling Commission · HMRC'], ['DK', 'Denmark', 2, 4, 3, 41.0, 'complete', 'Danish FSA'], ['EE', 'Estonia', 2, 6, 3, 2.2, 'partial', 'Finantsinspektsioon'],
+    ['NL', 'Netherlands', 3, 3, 14, 96.0, 'complete', 'DNB · AFM'], ['DE', 'Germany', 3, 4, 18, 61.5, 'complete', 'BaFin'], ['PL', 'Poland', 3, 5, 5, 4.0, 'partial', 'KNF · GIIF'], ['LV', 'Latvia', 3, 6, 4, 6.8, 'partial', 'Latvijas Banka'],
+    ['BE', 'Belgium', 4, 3, 3, 5.5, 'partial', 'NBB · FSMA'], ['CZ', 'Czechia', 4, 4, 2, 1.1, 'partial', 'Czech National Bank'], ['SK', 'Slovakia', 4, 5, 0, 0, 'gap', 'National Bank of Slovakia'], ['LT', 'Lithuania', 4, 6, 9, 14.2, 'complete', 'Bank of Lithuania'],
+    ['FR', 'France', 5, 2, 11, 48.0, 'complete', 'ACPR'], ['LU', 'Luxembourg', 5, 3, 5, 9.6, 'complete', 'CSSF · CAA'], ['AT', 'Austria', 5, 4, 3, 2.7, 'partial', 'FMA'], ['HU', 'Hungary', 5, 5, 2, 1.4, 'partial', 'MNB'], ['RO', 'Romania', 5, 6, 0, 0, 'gap', 'BNR · ONPCSB'],
+    ['PT', 'Portugal', 6, 1, 2, 1.9, 'partial', 'Banco de Portugal'], ['ES', 'Spain', 6, 2, 7, 18.0, 'partial', 'SEPBLAC · Tesoro'], ['IT', 'Italy', 6, 3, 8, 21.3, 'partial', 'Banca d’Italia · UIF · IVASS'], ['SI', 'Slovenia', 6, 4, 0, 0, 'gap', 'Banka Slovenije'], ['HR', 'Croatia', 6, 5, 1, 0.4, 'partial', 'HNB'], ['BG', 'Bulgaria', 6, 6, 0, 0, 'gap', 'BNB'],
+    ['MT', 'Malta', 7, 3, 6, 7.9, 'complete', 'FIAU · MFSA'], ['GR', 'Greece', 7, 6, 0, 0, 'gap', 'Bank of Greece · HCMC'], ['CY', 'Cyprus', 7, 7, 4, 3.6, 'partial', 'CBC · CySEC']
+  ];
+  CASES = {
+    NL: [['Tier-1 retail bank', 'banking', '€42.0m', 'Transaction monitoring failures over six years', 'Mar 2026'], ['Payment institution', 'payments', '€8.5m', 'Merchant CDD and ongoing monitoring', 'May 2026'], ['Crypto service provider', 'crypto', '€3.1m', 'Operating without registration', 'Sep 2026']],
+    DE: [['Digital bank', 'banking', '€9.2m', 'Delayed suspicious activity reports', 'Nov 2026'], ['Private bank', 'wealth', '€4.8m', 'EDD on high-risk customers', 'Jun 2026'], ['Payment institution', 'payments', '€2.3m', 'Group-wide AML controls', 'Feb 2026']],
+    FR: [['Universal bank', 'banking', '€12.0m', 'Asset-freeze procedures', 'Apr 2026'], ['Life insurer', 'insurance', '€6.0m', 'AML/CFT controls on unit-linked policies', 'Jul 2026']],
+    IE: [['Life insurer', 'insurance', '€3.7m', 'CDD on legacy policyholders', 'Aug 2026'], ['Payment firm', 'payments', '€5.2m', 'Transaction monitoring calibration', 'Oct 2026']],
+    LT: [['E-money institution', 'payments', '€3.5m', 'Customer risk assessment', 'Jan 2026'], ['E-money institution', 'payments', 'Licence revoked', 'Systemic AML failures', 'Jun 2026']],
+    UK: [['Retail bank', 'banking', '£29.0m', 'Transaction monitoring and alert backlog', 'Apr 2026'], ['Gambling operator', 'gambling', '£11.6m', 'AML and social responsibility failings', 'Mar 2026'], ['Wealth manager', 'wealth', '£6.4m', 'EDD on PEPs and source of wealth', 'Sep 2026'], ['Payments firm', 'payments', '£3.1m', 'Sanctions breach (OFSI penalty)', 'Jul 2026']],
+    SE: [['Retail bank', 'banking', '€30.0m', 'Controls over a Baltic subsidiary', 'May 2026']],
+    DK: [['Systemic bank', 'banking', '€38.0m', 'Correspondent banking oversight', 'Feb 2026']],
+    LU: [['Fund administrator', 'wealth', '€4.1m', 'Investor due diligence', 'Sep 2026']],
+    MT: [['Gaming company', 'gambling', '€2.6m', 'Risk assessment and CDD', 'Jun 2026']]
+  };
+  SCALE = ['#F1F5F9', '#99DBF7', '#297DA6', '#006975', '#002959'];
+
+  WORDS = [
+    ['customer risk assessment', 11, 2], ['alert backlog', 7, 4], ['transaction monitoring', 13, 1], ['PEPs', 6, -1], ['senior management oversight', 9, 3], ['source of wealth', 6, 0],
+    ['financial crime controls', 12, 0], ['Principle 3', 8, 0, '“…the Firm breached Principle 3 by failing to take reasonable care to organise and control its affairs responsibly and effectively, with adequate risk management systems…”'],
+    ['periodic reviews', 7, 2], ['enhanced due diligence', 10, 1], ['skilled person', 5, 2], ['onboarding', 6, -2], ['high-risk customers', 9, 1],
+    ['SYSC 6.1.1R', 8, 1, '“…the Firm failed to establish and maintain effective systems and controls for countering the risk that it might be used to further financial crime, contrary to SYSC 6.1.1R…”'],
+    ['inadequate resourcing', 6, 3], ['remediation programme', 7, 2], ['sanctions screening', 5, 1], ['management information', 5, -1], ['correspondent banking', 4, 0], ['escalation', 5, 1], ['automated systems', 4, 2]
+  ];
+
+  LAG = [
+    { id: 'gambling', label: 'Gambling', g: 2017.0, a: 2018.4, gl: 'Gambling Commission revises AML guidance', al: 'First £1m+ AML penalty' },
+    { id: 'wealth', label: 'Wealth & asset mgmt', g: 2017.3, a: 2019.6, gl: 'FCA thematic review of enhanced due diligence', al: 'First final notice on PEP due diligence' },
+    { id: 'banking', label: 'Challenger banks', g: 2018.5, a: 2021.9, gl: 'Thematic review of challenger-bank controls', al: 'First challenger-bank final notice' },
+    { id: 'crypto', label: 'Crypto-assets', g: 2020.0, a: 2023.4, gl: 'Cryptoasset registration regime begins', al: 'First action against a registered firm' },
+    { id: 'payments', label: 'Payments & e-money', g: 2020.5, a: 2022.8, gl: 'Dear CEO letter on financial crime controls', al: 'First e-money institution final notice' },
+    { id: 'insurance', label: 'Insurance', g: 2026.6, a: 2028.9, lo: 2028.3, hi: 2029.6, gl: 'AMLA guidelines extend scrutiny to life insurers', al: 'Projected first enforcement action', forecast: true }
+  ];
+  LADDER = [['Thematic review of life insurers', '2026', true], ['Dear CEO letter to insurers', 'Expected H1 2027', false], ['Skilled-person reviews commissioned', '2027–28', false], ['First final notice', 'Q2 2028 – Q3 2029', false]];
+
+  GUIDES = [
+    { jur: 'eu', title: 'AMLA RTS on customer due diligence', short: 'Harmonised CDD data points across the EU', date: 'Applies 10 July 2027', help: 'We run CDD data gap analyses across multi-jurisdiction groups and plan the remediation of existing customer books.', steps: [
+      { k: 'text', t: 'What changed', b: 'From July 2027, firms across the EU collect a common minimum set of identification and verification data, replacing 27 national approaches. Beneficial-ownership checks and refresh triggers are standardised too.' },
+      { k: 'list', t: 'Who it affects', b: 'Every obliged entity in an EU member state — and the group-wide policies of UK groups with EU subsidiaries.', l: ['Banks and building societies', 'Payment and e-money institutions', 'Life insurers and intermediaries', 'Crypto-asset service providers'] },
+      { k: 'check', t: 'What to do', b: 'Five actions most firms need in place before the AMLR applies.', l: ['Map current CDD data fields against the RTS data points', 'Identify gaps by jurisdiction and customer type', 'Update onboarding journeys and refresh triggers', 'Plan remediation of the existing customer book', 'Brief the board on timeline, cost and risk'] },
+      { k: 'list', t: 'Evidence to hold', b: 'What a supervisor will ask to see.', l: ['Gap analysis signed off by the MLRO', 'Updated CDD procedures under version control', 'Remediation MI with completion rates', 'QA results on post-change onboarding files'] }
+    ] },
+    { jur: 'global', title: 'FATF Recommendation 16 — payment transparency', short: 'Richer originator and beneficiary data on cross-border payments', date: 'National implementation 2026–2030', help: 'We assess payment-message readiness and design name-matching controls with operations and technology teams.', steps: [
+      { k: 'text', t: 'What changed', b: 'The revised standard requires more complete, structured originator and beneficiary information on cross-border payments, with name-matching checks at the receiving institution.' },
+      { k: 'list', t: 'Who it affects', b: 'Payment service providers in every FATF member jurisdiction, as national rules catch up.', l: ['Correspondent and clearing banks', 'Payment institutions and remitters', 'Card schemes and acquirers', 'VASPs, through the travel rule'] },
+      { k: 'check', t: 'What to do', b: 'Five actions to prepare ahead of national rules.', l: ['Assess structured-data readiness in payment messages', 'Define beneficiary name-matching rules and thresholds', 'Update policy for incomplete or missing information', 'Test with correspondents and payment schemes', 'Set MI for rejected and repaired payments'] },
+      { k: 'list', t: 'Evidence to hold', b: 'What a supervisor will ask to see.', l: ['Data-quality testing on outbound payments', 'Documented treatment of incomplete payments', 'Name-matching performance and tuning records', 'Updated correspondent due diligence'] }
+    ] },
+    { jur: 'uk', title: 'Failure to prevent fraud — reasonable procedures', short: 'Corporate liability for fraud by associated persons', date: 'In force since 1 September 2025', help: 'We run fraud risk assessments across associated persons and test whether procedures would stand up as “reasonable”.', steps: [
+      { k: 'text', t: 'What changed', b: 'Large organisations can be prosecuted where an employee, agent or subsidiary commits fraud intending to benefit them — unless they had reasonable fraud-prevention procedures in place.' },
+      { k: 'list', t: 'Who it affects', b: 'Large organisations meeting two of three size thresholds, including overseas firms where the fraud has a UK nexus.', l: ['Banks, insurers and asset managers', 'Their subsidiaries and agents', 'Outsourced providers acting on their behalf', 'Overseas parents with a UK nexus'] },
+      { k: 'check', t: 'What to do', b: 'Five actions that underpin a reasonable-procedures defence.', l: ['Run a fraud risk assessment across associated persons', 'Confirm top-level commitment and an accountable executive', 'Embed proportionate procedures in high-risk areas', 'Train staff and key third parties', 'Monitor, review and test procedures annually'] },
+      { k: 'list', t: 'Evidence to hold', b: 'What prosecutors and supervisors will look for.', l: ['Documented fraud risk assessment', 'Board minutes showing oversight', 'Training completion and attestation records', 'Annual review findings and remediation log'] }
+    ] }
+  ];
+
+  OUT = [
+    { id: 'o1', jur: 'eu', x: 90, y: 90, side: 'l', sl: 'AMLR applies', t: 'The EU AML Regulation applies', when: '10 Jul 2027', d: 'The single EU AML rulebook applies directly in every member state, replacing national versions of core CDD, beneficial-ownership and reporting obligations.', act: 'Complete gap analysis and remediation planning in H1 2027.' },
+    { id: 'o2', jur: 'eu', x: 66, y: 82, side: 'l', sl: 'AMLA selects entities', t: 'AMLA selects directly supervised entities', when: 'H2 2027', d: 'AMLA chooses the cross-border groups it will supervise directly from 2028, based on risk and presence across member states.', act: 'Model your likelihood of selection and prepare for a supervisory data request.' },
+    { id: 'o3', jur: 'eu', x: 46, y: 72, side: 'r', sl: 'EU fraud liability (PSR)', t: 'EU Payment Services Regulation — fraud liability', when: '2027 (to be confirmed)', d: 'Proposed EU rules would shift more liability for impersonation fraud onto payment service providers.', act: 'Benchmark fraud controls against UK reimbursement experience.' },
+    { id: 'o4', jur: 'eu', x: 78, y: 62, side: 'l', sl: '6AMLD transposition', t: '6AMLD transposition deadline', when: '10 Jul 2027', d: 'Member states must transpose the directive covering FIUs, registers and national supervisory powers.', act: 'Track national transposition wherever you hold a licence.' },
+    { id: 'o5', jur: 'uk', x: 86, y: 50, side: 'l', sl: 'UK MLR amendments', t: 'UK Money Laundering Regulations amendments', when: 'Q1 2027', d: 'Targeted amendments take effect, including changes to CDD triggers and trust registration.', act: 'Update policies and procedures, and refresh training.' },
+    { id: 'o6', jur: 'uk', x: 24, y: 60, side: 'r', sl: 'Economic Crime Plan 3', t: 'Economic Crime Plan 3', when: 'Nov 2027', d: 'The next UK Economic Crime Plan sets cross-government priorities to 2030.', act: 'Watch for signals on fraud, sanctions and public–private data sharing.' },
+    { id: 'o7', jur: 'global', x: 42, y: 44, side: 'r', sl: 'FATF 5th-round MERs', t: 'FATF 5th-round mutual evaluations of EU states', when: 'Through 2027', d: 'FATF publishes evaluations for several EU states, testing effectiveness rather than technical compliance.', act: 'Expect national supervisors to raise intensity ahead of onsite visits.' },
+    { id: 'o8', jur: 'uk', x: 58, y: 32, side: 'r', sl: 'FCA supervises professions', t: 'FCA becomes the professional-services AML supervisor', when: 'From 2027', d: 'The FCA begins its transition to supervising AML compliance across legal and accountancy professional bodies.', act: 'Professional-services firms should prepare for a more data-led supervisor.' },
+    { id: 'o9', jur: 'global', x: 26, y: 28, side: 'r', sl: 'FATF plenaries', t: 'FATF plenary outcomes', when: 'Feb · Jun · Oct 2027', d: 'Three plenaries update the grey and black lists and adopt new guidance.', act: 'Refresh country-risk ratings within a week of each plenary.' },
+    { id: 'o10', jur: 'uk', x: 76, y: 18, side: 'l', sl: 'UK crypto regime live', t: 'UK cryptoasset regime goes live', when: '2027', d: 'The new regime begins authorising trading platforms and custodians.', act: 'Banks with crypto exposure should revisit their risk appetite.' },
+    { id: 'o11', jur: 'global', x: 12, y: 46, side: 'r', sl: 'FATF fraud work', t: 'FATF work on fraud and asset recovery', when: 'Through 2027', d: 'FATF continues work on cyber-enabled fraud and asset recovery, with early-stage outputs expected.', act: 'Low immediate impact; monitor for future standards.' },
+    { id: 'o12', jur: 'global', x: 10, y: 12, side: 'r', sl: 'Wolfsberg updates', t: 'Wolfsberg guidance updates', when: '2027', d: 'Updated industry guidance on monitoring and correspondent banking due diligence.', act: 'Use as a benchmark in your next methodology review.' }
+  ];
+
+  componentDidMount() {
+    this.onScroll = () => {
+      const h = document.documentElement, y = window.pageYOffset || h.scrollTop, max = h.scrollHeight - h.clientHeight;
+      if (this.progRef.current) this.progRef.current.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+      let act = '';
+      if (y > 0) for (const [id] of this.NAV) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 140) act = id; }
+      if (act !== this.state.active) this.setState({ active: act });
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
+    this.settle = setTimeout(this.onScroll, 400);
+    window.addEventListener('load', this.onScroll);
+    const tr = this.trackRef.current;
+    if (tr) tr.scrollLeft = Math.max(0, 1152 - tr.clientWidth * 0.5);
+    if (this.props.autoplay === false) this.setState({ playing: false }); else this.schedule();
+  }
+  componentDidUpdate(pp, ps) {
+    if (pp.autoplay !== this.props.autoplay) { this.setState({ playing: this.props.autoplay !== false }); return; }
+    if (ps.stage !== this.state.stage || ps.typo !== this.state.typo || ps.playing !== this.state.playing) this.schedule();
+  }
+  componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('load', this.onScroll); clearTimeout(this.timer); clearTimeout(this.settle); }
+  schedule() {
+    clearTimeout(this.timer);
+    if (!this.state.playing) return;
+    this.timer = setTimeout(() => this.setState(s => ({ stage: (s.stage + 1) % this.TYPO[s.typo].stages.length })), 4500);
+  }
+  go(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 60, behavior: 'smooth' }); }
+  fm(m) { return this.MONTHS[m % 12] + ' ' + (2026 + Math.floor(m / 12)); }
+  fmL(m) { return this.MONTHS_L[m % 12] + ' ' + (2026 + Math.floor(m / 12)); }
+  fym(s) { const [y, mo] = s.split('-'); return this.MONTHS[+mo - 1] + ' ' + y; }
+  pickTl(id) { this.setState({ tl: id }); const e = this.EVENTS.find(x => x.id === id), tr = this.trackRef.current; if (e && tr) tr.scrollTo({ left: Math.max(0, e.m * 96 - tr.clientWidth / 2 + 90), behavior: 'smooth' }); }
+
+  buildFlow(T, si) {
+    const h = React.createElement, on = new Set(T.stages[si].n), N = {}, W = 164, H = 54;
+    T.nodes.forEach(n => { N[n.id] = n; });
+    const edges = T.edges.map(([a, b, lab], i) => {
+      const A = N[a], B = N[b], mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+      const d = `M${A.x} ${A.y} C${mx} ${A.y} ${mx} ${B.y} ${B.x} ${B.y}`;
+      const act = on.has(a) && on.has(b);
+      return h('g', { key: 'e' + i },
+        h('path', { d, fill: 'none', stroke: act ? '#78BF26' : 'rgba(255,255,255,0.22)', strokeWidth: act ? 2 : 1.25, strokeDasharray: act ? '0' : '4 5', style: { transition: 'stroke 400ms' } }),
+        [0, 1, 2].map(k => h('circle', { key: k, r: act ? 4 : 2.5, fill: act ? '#78BF26' : '#FFFFFF', opacity: act ? 1 : 0.35, style: { transition: 'opacity 400ms' } },
+          h('animateMotion', { dur: '2.7s', repeatCount: 'indefinite', begin: (-k * 0.9) + 's', path: d }))),
+        h('text', { x: mx, y: my - 8, textAnchor: 'middle', fill: act ? '#FFFFFF' : 'rgba(255,255,255,0.55)', stroke: '#002959', strokeWidth: 4, paintOrder: 'stroke', style: { font: '500 10px Lexend, sans-serif', transition: 'fill 400ms' } }, lab));
+    });
+    const nodes = T.nodes.map(n => {
+      const act = on.has(n.id);
+      return h('g', { key: n.id, transform: `translate(${n.x - W / 2} ${n.y - H / 2})` },
+        h('rect', { width: W, height: H, rx: 4, fill: act ? '#FFFFFF' : '#0A3566', stroke: act ? '#78BF26' : 'rgba(255,255,255,0.25)', strokeWidth: act ? 2 : 1, style: { transition: 'fill 400ms, stroke 400ms' } }),
+        h('text', { x: 12, y: 23, fill: act ? '#002959' : '#FFFFFF', style: { font: '700 12.5px Lexend, sans-serif', transition: 'fill 400ms' } }, n.l),
+        h('text', { x: 12, y: 40, fill: act ? '#334155' : 'rgba(255,255,255,0.7)', style: { font: '400 11px Lexend, sans-serif', transition: 'fill 400ms' } }, n.s));
+    });
+    return h('svg', { key: 'flow' + this.state.typo, viewBox: '0 0 830 400', width: '100%', style: { display: 'block', maxHeight: 440 } }, h('g', null, edges), h('g', null, nodes));
+  }
+
+  renderVals() {
+    const s = this.state, p = this.props, set = o => this.setState(o), lens = s.lens, J = this.JUR;
+    const lensOk = j => lens === 'all' || lens === j;
+    const secOk = arr => s.sector === 'all' || arr.includes('all') || arr.includes(s.sector);
+    const resetAll = () => set({ lens: 'all', sector: 'all', theme: 'all', sig: 1, query: '' });
+
+    const navItems = this.NAV.map(([id, label]) => ({ label, go: () => this.go(id), color: s.active === id ? '#002959' : '#64748B', line: s.active === id ? '#47A340' : 'transparent' }));
+    const lenses = this.LENSES.map(l => ({ label: l.label, pick: () => set({ lens: l.id }), bg: lens === l.id ? '#FFFFFF' : 'transparent', fg: lens === l.id ? '#002959' : 'rgba(255,255,255,0.85)' }));
+
+    // inventory
+    const q = s.query.trim().toLowerCase();
+    const base = this.ITEMS.filter(i => lensOk(i.jur) && secOk(i.sectors) && i.sig >= s.sig && (!q || (i.title + ' ' + i.sum + ' ' + i.lvl).toLowerCase().includes(q)));
+    const list = base.filter(i => s.theme === 'all' || i.theme === s.theme).sort((a, b) => b.sig - a.sig || b.m.localeCompare(a.m));
+    const themeChips = [{ id: 'all', label: 'All themes', n: base.length }].concat(Object.keys(this.THEMES).map(id => ({ id, label: this.THEMES[id].label, n: base.filter(i => i.theme === id).length }))).map(t => {
+      const on = s.theme === t.id;
+      return { label: t.label, n: t.n, pick: () => set({ theme: t.id }), bg: on ? '#002959' : '#FFFFFF', fg: on ? '#FFFFFF' : '#002959', bd: on ? '#002959' : '#CBD5E1', dot: t.id === 'all' ? 'transparent' : this.THEMES[t.id].color, dotDisp: t.id === 'all' ? 'none' : 'block' };
+    });
+    const mix = Object.keys(this.THEMES).map(id => ({ label: this.THEMES[id].label, color: this.THEMES[id].color, n: base.filter(i => i.theme === id).length, op: s.theme === 'all' || s.theme === id ? 1 : 0.25 })).filter(m => m.n > 0);
+    const cards = list.map(i => ({
+      title: i.title, sum: i.sum, theme: this.THEMES[i.theme].label, tcolor: this.THEMES[i.theme].color, jur: J[i.jur].label, jbg: J[i.jur].bg, lvl: i.lvl, date: this.fym(i.m),
+      tags: (i.sectors.includes('all') ? ['All sectors'] : i.sectors.map(x => this.SECTORS[x])).map(t => ({ t })),
+      bars: [1, 2, 3].map(k => ({ bg: k <= i.sig ? '#47A340' : '#E2E8F0', h: (4 + k * 4) + 'px' })), sigLabel: ['', 'Notable', 'Significant', 'Major'][i.sig]
+    }));
+
+    // timeline
+    const tlLanes = ['global', 'eu', 'uk'].map(id => ({
+      label: J[id].name, sub: J[id].sub, color: J[id].bg, op: lensOk(id) ? 1 : 0.28,
+      events: this.EVENTS.filter(e => e.lane === id).map(e => {
+        const col = J[id].bg, on = e.id === s.tl, filled = e.k === 'outcome';
+        return { t: e.t, date: this.fm(e.m), left: (e.m * 96 + 6) + 'px', top: (18 + e.r * 72) + 'px', bg: filled ? col : '#FFFFFF', fg: filled ? '#FFFFFF' : '#002959', dc: filled ? 'rgba(255,255,255,0.78)' : col, bd: `1.5px ${e.k === 'consult' ? 'dashed' : 'solid'} ${col}`, sh: on ? '0 0 0 3px rgba(0,181,237,0.5), 0 8px 24px rgba(0,41,89,0.18)' : 'none', z: on ? 3 : 2, tf: on ? 'translateY(-2px)' : 'none', pick: () => this.pickTl(e.id) };
+      })
+    }));
+    const months = Array.from({ length: 24 }, (_, m) => ({ label: this.MONTHS[m % 12], yr: m % 12 === 0 ? String(2026 + m / 12) : '', bd: m % 12 === 0 ? '#CBD5E1' : '#F1F5F9' }));
+    const visEv = this.EVENTS.filter(e => lensOk(e.lane)).sort((a, b) => a.m - b.m || a.r - b.r);
+    const cur = this.EVENTS.find(e => e.id === s.tl) || this.EVENTS[0];
+    const ci = visEv.findIndex(e => e.id === cur.id);
+    const stepTl = d => { if (!visEv.length) return; const i = ci < 0 ? 0 : (ci + d + visEv.length) % visEv.length; this.pickTl(visEv[i].id); };
+    const tlSel = { t: cur.t, d: cur.d, s: cur.s, date: this.fmL(cur.m), jur: J[cur.lane].label, jbg: J[cur.lane].bg, kind: this.KIND[cur.k], period: cur.m >= 12 ? 'Forward look · 2027' : '2026 in review' };
+
+    // typologies
+    const T = this.TYPO[s.typo];
+    const typoTabs = this.TYPO.map((t, i) => ({ label: t.name, pick: () => set({ typo: i, stage: 0 }), bg: i === s.typo ? '#FFFFFF' : 'transparent', fg: i === s.typo ? '#002959' : '#FFFFFF', bd: i === s.typo ? '#FFFFFF' : 'rgba(255,255,255,0.3)' }));
+    const stages = T.stages.map((st, i) => {
+      const on = i === s.stage;
+      return { n: i + 1, title: st.t, text: st.x, flags: st.f.map(f => ({ f })), on, pick: () => set({ stage: i, playing: false }), bg: on ? 'rgba(255,255,255,0.07)' : 'transparent', bd: on ? '#78BF26' : 'rgba(255,255,255,0.16)', numBg: on ? '#78BF26' : 'transparent', numFg: on ? '#002959' : '#FFFFFF' };
+    });
+    const typoSectors = T.sectors.map(x => ({ t: this.SECTORS[x], bg: s.sector === x ? '#78BF26' : 'rgba(255,255,255,0.1)', fg: s.sector === x ? '#002959' : '#FFFFFF' }));
+    const stageBar = React.createElement('div', { key: `${s.typo}-${s.stage}-${s.playing}`, style: { height: 2, background: '#78BF26', width: s.playing ? '0%' : '100%', opacity: s.playing ? 1 : 0.35, animation: s.playing ? 'pl-grow 4.5s linear forwards' : 'none' } });
+
+    // enforcement map
+    const val = c => (s.metric === 'count' ? c[4] : c[5]);
+    const max = Math.max(...this.COUNTRIES.map(val));
+    const tiles = this.COUNTRIES.map(c => {
+      const [code, name, row, col, n, v, cov] = c, gap = cov === 'gap', x = val(c);
+      const idx = gap || !x ? 0 : Math.min(4, Math.ceil(Math.sqrt(x / max) * 4));
+      const vis = lens === 'uk' ? code === 'UK' : lens === 'eu' ? code !== 'UK' : true;
+      const shown = gap ? '—' : s.metric === 'count' ? String(n) : code === 'UK' ? '£' + Math.round(v * 0.86) + 'm' : '€' + (v >= 10 ? Math.round(v) : v.toFixed(1)) + 'm';
+      return { code, name, row, col, val: shown, bg: this.SCALE[idx], fg: idx >= 2 ? '#FFFFFF' : '#002959', bd: gap ? '1.5px dashed #94A3B8' : '1.5px solid transparent', ol: code === s.country ? '3px solid #47A340' : '3px solid transparent', op: vis ? 1 : 0.25, pick: () => set({ country: code }) };
+    });
+    const metrics = [['count', 'Actions'], ['value', 'Penalties']].map(([id, label]) => ({ label, pick: () => set({ metric: id }), bg: s.metric === id ? '#FFFFFF' : 'transparent', fg: s.metric === id ? '#002959' : '#64748B', sh: s.metric === id ? '0 1px 2px rgba(0,41,89,0.08)' : 'none' }));
+    const C = this.COUNTRIES.find(c => c[0] === s.country), cases = this.CASES[C[0]] || [];
+    const covMap = { complete: ['Data complete', '#005740', '#E3F1E1'], partial: ['Partial — compiling', '#7A4B00', '#FBEFD9'], gap: ['Gap — not yet sourced', '#334155', '#F1F5F9'] }[C[6]];
+    const cty = {
+      name: C[1], regs: C[7], n: C[6] === 'gap' ? '—' : String(C[4]), v: C[6] === 'gap' ? '—' : C[0] === 'UK' ? '£' + Math.round(C[5] * 0.86) + 'm' : '€' + C[5].toFixed(1) + 'm',
+      cov: covMap[0], covFg: covMap[1], covBg: covMap[2], hasCases: cases.length > 0, noCases: cases.length === 0,
+      cases: cases.map(([firm, sec, amt, issue, date]) => ({ firm, amt, issue, date, sector: this.SECTORS[sec], op: s.sector === 'all' || s.sector === sec ? 1 : 0.35 })),
+      note: C[6] === 'gap' ? 'We have not yet sourced 2026 enforcement data for this jurisdiction. It is flagged for the next research sprint, before selection thresholds are set.' : 'Headline figures are compiled; representative cases are still being reviewed against our significance threshold.'
+    };
+
+    // word cloud
+    const words = this.WORDS.map(([t, n]) => { const on = t === s.word; return { t, size: Math.round(13 + (n / 13) * 22) + 'px', w: n >= 9 ? 700 : 500, fg: on ? '#FFFFFF' : n >= 10 ? '#002959' : n >= 7 ? '#297DA6' : '#006975', bg: on ? '#002959' : 'transparent', pick: () => set({ word: t }) }; });
+    const wi = Math.max(0, this.WORDS.findIndex(w => w[0] === s.word)), Wd = this.WORDS[wi], L = this.WORDS.length;
+    const wordSel = {
+      t: Wd[0], n: Wd[1], delta: Wd[2] > 0 ? '▲ ' + Wd[2] : Wd[2] < 0 ? '▼ ' + Math.abs(Wd[2]) : 'No change', dcol: Wd[2] > 0 ? '#005740' : Wd[2] < 0 ? '#C03221' : '#64748B',
+      waffle: Array.from({ length: 14 }, (_, i) => ({ bg: i < Wd[1] ? '#47A340' : '#E2E8F0' })),
+      x: Wd[3] || `“…weaknesses in ${Wd[0]} meant the Firm could not adequately identify, assess and manage the financial crime risks it was exposed to…”`,
+      rel: [3, 7, 11].map(o => this.WORDS[(wi + o) % L][0]).map(t => ({ t, pick: () => set({ word: t }) }))
+    };
+
+    // timing
+    const y0 = 2016, span = 14, pc = y => (((y - y0) / span) * 100).toFixed(2) + '%';
+    const lagRows = this.LAG.map(r => {
+      const on = r.id === s.lag, mo = Math.round((r.a - r.g) * 12);
+      return { label: r.label, pick: () => set({ lag: r.id }), bg: on ? '#EBF8FD' : 'transparent', fw: on ? 700 : 500, gl: pc(r.g), al: pc(r.a), lw: pc(y0 + (r.a - r.g)), ml: pc((r.g + r.a) / 2), lag: (r.forecast ? '~' : '') + mo + ' mo', ls: r.forecast ? 'dashed' : 'solid', abg: r.forecast ? '#FFFFFF' : '#47A340', bl: r.forecast ? pc(r.lo) : '0%', bw: r.forecast ? pc(y0 + (r.hi - r.lo)) : '0%', bdisp: r.forecast ? 'block' : 'none' };
+    });
+    const ticks = [2016, 2018, 2020, 2022, 2024, 2026, 2028, 2030].map(y => ({ y: String(y), x: pc(y) }));
+    const yq = y => { const yr = Math.floor(y), q = Math.min(4, Math.floor((y - yr) * 4) + 1); return 'Q' + q + ' ' + yr; };
+    const R = this.LAG.find(r => r.id === s.lag), rm = Math.round((R.a - R.g) * 12);
+    const lagSel = { eyebrow: R.forecast ? 'Projection · illustrative' : 'Historical precedent', label: R.label, months: (R.forecast ? '~' : '') + rm, unit: R.forecast ? 'months, projected from the median lag' : 'months from guidance to first action', gd: yq(R.g), gl: R.gl, ad: R.forecast ? yq(R.lo) + ' – ' + yq(R.hi) : yq(R.a), al: R.al, abg: R.forecast ? '#FFFFFF' : '#47A340', forecast: !!R.forecast, hist: !R.forecast, note: `From first guidance to first enforcement took ${rm} months in ${R.label.toLowerCase()}. Each sector followed a similar sequence: thematic work, a Dear CEO letter, skilled-person reviews, then a final notice.` };
+    const ladder = this.LADDER.map(([t, when, done]) => ({ t, when, bg: done ? '#47A340' : '#FFFFFF', bd: done ? '#47A340' : '#CBD5E1', mark: done ? '✓' : '' }));
+
+    // journey
+    const G = this.GUIDES[s.guide], st = G.steps[s.step];
+    const guides = this.GUIDES.map((g, i) => { const on = i === s.guide; return { title: g.title, short: g.short, jur: J[g.jur].label, jbg: on ? J[g.jur].bg : 'rgba(255,255,255,0.14)', pick: () => set({ guide: i, step: 0 }), bg: on ? '#FFFFFF' : 'rgba(255,255,255,0.04)', fg: on ? '#002959' : '#FFFFFF', sub: on ? '#334155' : 'rgba(255,255,255,0.72)', bd: on ? '#FFFFFF' : 'rgba(255,255,255,0.2)' }; });
+    const steps = G.steps.map((x, i) => ({ title: x.t, num: i < s.step ? '✓' : String(i + 1), pick: () => set({ step: i }), cbg: i < s.step ? '#47A340' : i === s.step ? '#FFFFFF' : '#002959', cfg: i < s.step ? '#FFFFFF' : i === s.step ? '#002959' : 'rgba(255,255,255,0.7)', cbd: i < s.step ? '#47A340' : i === s.step ? '#FFFFFF' : 'rgba(255,255,255,0.35)', lfg: i === s.step ? '#FFFFFF' : 'rgba(255,255,255,0.7)' }));
+    const checkList = G.steps.find(x => x.k === 'check').l;
+    const done = checkList.filter((_, i) => s.checks[s.guide + '-' + i]).length;
+    const stepCur = {
+      eyebrow: `Step ${s.step + 1} of 4`, title: st.t, body: st.b, isList: st.k === 'list', isCheck: st.k === 'check', list: (st.l || []).map(t => ({ t })),
+      checks: st.k === 'check' ? st.l.map((t, i) => { const key = s.guide + '-' + i, on = !!s.checks[key]; return { t, mark: on ? '✓' : '', bg: on ? '#F3FAF2' : '#FFFFFF', bd: on ? '#47A340' : '#E2E8F0', boxBg: on ? '#47A340' : '#FFFFFF', boxBd: on ? '#47A340' : '#CBD5E1', toggle: () => this.setState(ss => ({ checks: { ...ss.checks, [key]: !ss.checks[key] } })) }; }) : []
+    };
+    const ready = { n: done, pct: (done / 5) * 100 + '%', msg: done === 0 ? 'Tick off the actions in step 3 that you already have in hand.' : done < 3 ? 'Early days. The remaining actions are where most firms need support.' : done < 5 ? 'Good progress. Close the remaining gaps before the key date.' : 'Ready. Now make sure the evidence in step 4 is in place.' };
+
+    // outlook
+    const quadOf = o => (o.x >= 50 ? (o.y >= 50 ? 'Act now' : 'Plan and comply') : o.y >= 50 ? 'Watch closely' : 'Monitor');
+    const outs = this.OUT.map(o => {
+      const on = o.id === s.out, r = o.side !== 'l';
+      return { sl: o.sl, x: o.x + '%', y: o.y + '%', size: on ? '20px' : '14px', bg: J[o.jur].bg, ring: on ? '0 0 0 4px rgba(0,181,237,0.4)' : '0 1px 3px rgba(0,41,89,0.3)', op: lensOk(o.jur) ? 1 : 0.18, ll: r ? `calc(${o.x}% + 14px)` : 'auto', lr: r ? 'auto' : `calc(${100 - o.x}% + 14px)`, lb: `calc(${o.y}% - 8px)`, lw: on ? 700 : 500, lc: on ? '#002959' : '#334155', pick: () => set({ out: o.id }) };
+    });
+    const O = this.OUT.find(o => o.id === s.out), qd = quadOf(O);
+    const outSel = { t: O.t, when: O.when, d: O.d, act: O.act, jur: J[O.jur].label, jbg: J[O.jur].bg, quad: qd, qbg: qd === 'Act now' ? '#002959' : '#F1F5F9', qfg: qd === 'Act now' ? '#FFFFFF' : '#002959' };
+    const shortlist = this.OUT.filter(o => quadOf(o) === 'Act now' && lensOk(o.jur)).map(o => ({ t: o.t, when: o.when, pick: () => set({ out: o.id }) }));
+
+    const filtered = lens !== 'all' || s.sector !== 'all';
+    return {
+      progRef: this.progRef, trackRef: this.trackRef, navItems, lenses, sector: s.sector,
+      onSector: e => { const v = e.target.value, o = { sector: v }; if (this.LAG.some(r => r.id === v)) o.lag = v; this.setState(o); },
+      dockNote: `${list.length} of 18 highlights match`, filtered, resetAll,
+      goTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }), goContact: () => this.go('contact'), goOverview: () => this.go('overview'),
+      heroPhoto: p.heroStyle !== 'Flat shards', heroFlat: p.heroStyle === 'Flat shards', illus: p.showIllustrative !== false,
+      lensName: this.LENSES.find(l => l.id === lens).long, kpis: this.KPIS[lens].map(([v, l, n]) => ({ v, l, n })),
+      themeChips, query: s.query, onQuery: e => set({ query: e.target.value }), sig: s.sig, onSig: e => set({ sig: +e.target.value }),
+      sigLabel: ['Show everything', 'Significant and above', 'Major developments only'][s.sig - 1], mix, shown: list.length, cards, noResults: list.length === 0,
+      tlLanes, months, tlSel, tlPrev: () => stepTl(-1), tlNext: () => stepTl(1), tlPos: ci >= 0 ? `${ci + 1} of ${visEv.length} in view` : 'Outside current view',
+      typoTabs, typoDesc: T.desc, stages, typoSectors, stageNum: s.stage + 1, stageTitle: T.stages[s.stage].t, playLabel: s.playing ? 'Pause' : 'Play', togglePlay: () => set({ playing: !s.playing }), stageBar, flowEl: this.buildFlow(T, s.stage), typoSource: T.source,
+      metrics, tiles, scale: this.SCALE.map(c => ({ c })), cty, words, wordSel,
+      lagRows, ticks, todayX: pc(2026.92), lagSel, ladder,
+      guides, steps, stepPct: (s.step / 3) * 100 + '%', stepCur, ready, guideDate: G.date, guideHelp: G.help,
+      stepBack: () => set({ step: Math.max(0, s.step - 1) }), backOp: s.step === 0 ? 0.4 : 1,
+      stepNext: () => (s.step < 3 ? set({ step: s.step + 1 }) : this.go('contact')), nextLabel: s.step < 3 ? 'Next: ' + G.steps[s.step + 1].t + ' →' : 'Talk to us about this →',
+      outs, outSel, shortlist, shortEmpty: shortlist.length === 0,
+      email: s.email, onEmail: e => set({ email: e.target.value }), subscribe: () => set({ subscribed: true }), subscribed: s.subscribed, notSubscribed: !s.subscribed
+    };
+  }
+}
+</script>
+</body>
+</html>
